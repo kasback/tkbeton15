@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_supplier_rating_user,supplier.rating,model_supplier_rating,group_supplier_rating,1,1,1,1
+access_supplier_rating_line_user,supplier.rating.line,model_supplier_rating_line,group_supplier_rating,1,1,1,1
+access_supplier_rating_mark_user,supplier.rating.mark,model_rating_mark,group_supplier_rating,1,1,1,1

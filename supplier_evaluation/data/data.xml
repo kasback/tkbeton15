@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+
+        <record model="rating.mark" id="mark_0">
+            <field name="name">Médiocre</field>
+            <field name="mark">0</field>
+        </record>
+        <record model="rating.mark" id="mark_50">
+            <field name="name">Moyen</field>
+            <field name="mark">50</field>
+        </record>
+        <record model="rating.mark" id="mark_75">
+            <field name="name">Bon</field>
+            <field name="mark">75</field>
+        </record>
+        <record model="rating.mark" id="mark_100">
+            <field name="name">Excellent</field>
+            <field name="mark">100</field>
+        </record>
+        <record model="supplier.rating" id="sr1">
+            <field name="type">selection</field>
+            <field name="name">Réactivité du fournisseur suite à une consultation</field>
+        </record>
+        <record model="supplier.rating" id="sr2">
+            <field name="type">selection</field>
+            <field name="name">Prix compétitif</field>
+        </record>
+        <record model="supplier.rating" id="sr3">
+            <field name="type">selection</field>
+            <field name="name">Modalités de paiement</field>
+        </record>
+        <record model="supplier.rating" id="sr4">
+            <field name="type">selection</field>
+            <field name="name">Variété de gamme</field>
+        </record>
+        <record model="supplier.rating" id="sr5">
+            <field name="type">selection</field>
+            <field name="name">Délai de livraison</field>
+        </record>
+        <record model="supplier.rating" id="sr6">
+            <field name="type">selection</field>
+            <field name="name">Support Technique (si nécessaire)</field>
+        </record>
+
+        <record model="supplier.rating" id="er1">
+            <field name="type">eval</field>
+            <field name="name">Respect des délais de livraison</field>
+        </record>
+        <record model="supplier.rating" id="er2">
+            <field name="type">eval</field>
+            <field name="name">Conseil et assistance technique</field>
+        </record>
+        <record model="supplier.rating" id="er3">
+            <field name="type">eval</field>
+            <field name="name">Réactivité à une réclamation</field>
+        </record>
+        <record model="supplier.rating" id="er4">
+            <field name="type">eval</field>
+            <field name="name">Prix</field>
+        </record>
+
+        <record id="sf_stage_new" model="project.task.type">
+            <field name="sequence">1</field>
+            <field name="name">Nouveau</field>
+        </record>
+        <record id="sf_stage_open" model="project.task.type">
+            <field name="sequence">2</field>
+            <field name="name">En cours</field>
+        </record>
+        <record id="sf_stage_done" model="project.task.type">
+            <field name="sequence">3</field>
+            <field name="name">Términé</field>
+        </record>
+
+        <record id="project_selection_fournisseur" model="project.project">
+            <field name="name">Selection Fournisseur</field>
+            <field name="type">selection</field>
+            <field name="color">3</field>
+            <field name="type_ids"
+                   eval="[(4, ref('sf_stage_new')),(4, ref('sf_stage_open')),(4, ref('sf_stage_done'))]"/>
+        </record>
+
+        <record id="ef_stage_new" model="project.task.type">
+            <field name="sequence">1</field>
+            <field name="name">Nouveau</field>
+        </record>
+        <record id="ef_stage_open" model="project.task.type">
+            <field name="sequence">2</field>
+            <field name="name">En cours</field>
+        </record>
+        <record id="ef_stage_done" model="project.task.type">
+            <field name="sequence">3</field>
+            <field name="name">Terminé</field>
+        </record>
+
+        <record id="project_eval_fournisseur" model="project.project">
+            <field name="name">Évaluation Fournisseur</field>
+            <field name="type">eval</field>
+            <field name="color">3</field>
+            <field name="type_ids"
+                   eval="[(4, ref('ef_stage_new')),(4, ref('ef_stage_open')),(4, ref('ef_stage_done'))]"/>
+        </record>
+    </data>
+</odoo>

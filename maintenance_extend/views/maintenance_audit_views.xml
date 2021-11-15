@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="maintenance_audit_form" model="ir.ui.view">
+        <field name="name">maintenance.audit.form</field>
+        <field name="model">maintenance.audit</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="open_audit_lines" type="object" string="Démarrer l'Audit" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="maintenance_audit_tree" model="ir.ui.view">
+        <field name="name">maintenance.audit.tree</field>
+        <field name="model">maintenance.audit</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="maintenance_audit_search" model="ir.ui.view">
+        <field name="name">maintenance.audit.search</field>
+        <field name="model">maintenance.audit</field>
+        <field name="arch" type="xml">
+            <search>
+                <group expand="1" string="Group By">
+                    <filter string="Date" name="groupby_date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ir_cron_maintenance_audit" model="ir.cron">
+        <field name="name">Programation de la création des audits</field>
+        <field name="model_id" ref="maintenance_extend.model_maintenance_audit"/>
+        <field name="state">code</field>
+        <field name="code">model.generate_audit()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+    </record>
+
+    <record id="open_view_audit_maintenance_action" model="ir.actions.act_window">
+        <field name="name">Audit de maintenance</field>
+        <field name="res_model">maintenance.audit</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Audit de maintenance"
+              id="maintenance_audit_menu_item"
+              action="open_view_audit_maintenance_action"
+              parent="maintenance.menu_equipment_form"
+    />
+
+</odoo>

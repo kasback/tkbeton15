@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="act_fleet_2_consommation" model="ir.actions.act_window">
+        <field name="name">Consommations</field>
+        <field name="res_model">maintenance.consomation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('equipment_id', '=', active_id)]</field>
+        <field name="context">{'default_equipment_id': active_id}</field>
+    </record>
+
+    <record id="inherit_maintenance_equipment_extend_conso_form" model="ir.ui.view">
+            <field name="name">inherit.res.maintenance.equipment.extend.conso.form</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+            <field name="arch" type="xml">
+                <div name="button_box" position="inside">
+                <button class="oe_stat_button" type="action"
+                        name="%(maintenance_extend.act_fleet_2_consommation)d"
+                        icon="fa-sitemap">
+                    <field string="Consommations" name="count_vehicle_cons" widget="statinfo"/>
+                </button>
+            </div>
+            </field>
+    </record>
+
+    <record id="fleet_vehicle_cons_form" model="ir.ui.view">
+        <field name="name">maintenance.consomation.form</field>
+        <field name="model">maintenance.consomation</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="motif"/>
+                            <field name="equipment_id"/>
+                            <field name="date"/>
+                            <field name="immatriculation"/>
+                            <field name="conducteur"/>
+                        </group>
+                        <group>
+                            <field name="qty_litres"/>
+                            <field name="kilometrage"/>
+                            <field name="amount"/>
+                            <field name="total"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_cons_tree" model="ir.ui.view">
+        <field name="name">maintenance.consomation.tree</field>
+        <field name="model">maintenance.consomation</field>
+        <field name="arch" type="xml">
+            <tree default_order="date desc">
+                <field name="name"/>
+                <field name="motif"/>
+                <field name="equipment_id"/>
+                <field name="date"/>
+                <field name="immatriculation"/>
+                <field name="conducteur"/>
+                <field name="qty_litres"/>
+                <field name="kilometrage"/>
+                <field name="amount"/>
+                <field name="total"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="fleet_vehicle_cons_search" model="ir.ui.view">
+        <field name="name">maintenance.consomation.search</field>
+        <field name="model">maintenance.consomation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="date"/>
+                <field name="conducteur"/>
+                <field string="Vehicle" name="equipment_id"
+                       filter_domain="['|', ('equipment_id', 'ilike', self), ('immatriculation', 'ilike', self)]"/>
+                <group expand="1" string="Group By">
+                    <filter string="Date" name="groupby_date" context="{'group_by': 'date'}"/>
+                    <filter string="Conducteur" name="groupby_driver" context="{'group_by': 'conducteur'}"/>
+                    <filter string="Vehicle" name="gourpby_equipment_id"
+                       context="{'group_by': 'equipment_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="open_view_fleet_consomation" model="ir.actions.act_window">
+        <field name="name">Consomation de carburant</field>
+        <field name="res_model">maintenance.consomation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Consomation de carburant"
+              id="fleet_consomation_menu_item"
+              action="open_view_fleet_consomation"
+              parent="maintenance.menu_equipment_form"
+    />
+
+</odoo>

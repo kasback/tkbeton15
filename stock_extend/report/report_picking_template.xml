@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_real_date" inherit_id="stock.report_delivery_document">
+        <xpath expr="//div[@name='div_sched_date']" position="after">
+            <div t-if="o.picking_type_id.code == 'incoming'" class="col-auto" name="div_supplier_number">
+                <strong>BL Fournisseur:</strong>
+                <p t-field="o.supplier_number"/>
+            </div>
+            <div t-if="o.picking_type_id.code == 'incoming'" class="col-auto" name="div_date_done">
+                <strong>Date d'execution:</strong>
+                <p t-field="o.date_done"/>
+            </div>
+            <div t-if="o.picking_type_id.code == 'incoming'" class="col-auto" name="div_date_done">
+                <strong>Date Effective:</strong>
+                <p t-field="o.real_date"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>

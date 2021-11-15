@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_product_new" model="product.product">
+        <field name="name">À choisir L</field>
+        <field name="categ_id" ref="product.product_category_all"/>
+        <field name="type">product</field>
+        <field name="uom_id" ref="uom.product_uom_unit"/>
+        <field name="uom_po_id" ref="uom.product_uom_unit"/>
+        <field name="default_code">CHOIX</field>
+    </record>
+    <record id="product_product_new" model="product.product">
+        <field name="name">À choisir I</field>
+        <field name="categ_id" ref="product.product_category_all"/>
+        <field name="type">product</field>
+        <field name="uom_id" ref="uom.product_uom_unit"/>
+        <field name="uom_po_id" ref="uom.product_uom_unit"/>
+        <field name="default_code">CHOIX</field>
+    </record>
+</odoo>

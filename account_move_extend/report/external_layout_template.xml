@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="external_layout_inherit" inherit_id="web.external_layout_standard">
+        <xpath expr="//div[@t-attf-class='footer o_standard_footer o_company_#{company.id}_layout']" position="replace">
+            <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
+                <div class="row">
+                    <div class="col-4" style="font-size:12px;">
+                        Usine Kenitra : Nouvelle Zône Industrielle
+                        Belad Dandoun Sidi Taibi - Kénitra - Maroc
+                        f â : +212 5 37 52 25 U - F ax: +212 5 37 52 25 35
+                        GSM : +212 6 61 U220O - +2126 61 84 16 43
+                        E-mail : info@tkbeton.ma
+                    </div>
+                    <div class="col-4" style="font-size:12px;">
+                        RC: 311253 - l.F : 15193968 - CNSS : 4121323
+                        Patente :35547567 - Capital Social 12 000 000,00 DHS
+                        Banque Populaire Agence Trabless -RABAT
+                        RIB N" : 181 81O 21211 04407470004 30
+                        Code SWIFT: BCP.OMAMC
+                        ICE : 000083702000049
+                    </div>
+                    <div class="col-4" style="font-size:12px;">
+                        Siège: 1 74 Angle Boulevard Zerktouni
+                        Moussa Bnou Noussair N' 16
+                        Casablanca - Maroc
+                        fél : +212 5 22 20 90 40
+                        Fax : +212 5 22 20 90 39
+                        E-mail : info@tkbeton.ma
+                    </div>
+                </div>
+            </div>
+            <div t-if="report_type == 'pdf'" class="text-muted">
+                Page:
+                <span class="page"/>
+                /
+                <span class="topage"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>

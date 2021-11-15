@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="maintenance_audit_line_form" model="ir.ui.view">
+        <field name="name">maintenance.audit.line.form</field>
+        <field name="model">maintenance.audit.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="equipment_id"/>
+                        <field name="type_ids"/>
+                        <field name="nature"/>
+                        <field name="next_maintenance_date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="maintenance_audit_line_tree" model="ir.ui.view">
+        <field name="name">maintenance.audit.line.tree</field>
+        <field name="model">maintenance.audit.line</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="equipment_id"/>
+                <field name="type_ids"/>
+                <field name="nature"/>
+                <field name="next_maintenance_date"/>
+                <field name="is_ok"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="maintenance_audit_line_search" model="ir.ui.view">
+        <field name="name">maintenance.audit.line.search</field>
+        <field name="model">maintenance.audit.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="equipment_id" string="Équipement"/>
+                <separator/>
+                <filter string="Mécanique" name="equipement_mecanique"
+                        domain="[('type_ids', 'ilike', 'Mécanique')]"/>
+                <filter string="Hydraulique" name="equipement_hydraulique"
+                        domain="[('type_ids', 'ilike', 'Hydraulique')]"/>
+                <filter string="Électrique" name="equipement_electrique"
+                        domain="[('type_ids', 'ilike', 'Électrique')]"/>
+                <group expand="1" string="Group By">
+                    <filter string="Équipement" name="groupby_equipment" context="{'group_by': 'equipment_id'}"/>
+                    <filter string="Type d'équipement" name="type_id_group" domain="[]"
+                            context="{'group_by': 'type_ids'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="open_view_equipment_maintenance_line" model="ir.actions.act_window">
+        <field name="name">Lignes audit de maintenance</field>
+        <field name="res_model">maintenance.audit.line</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>
