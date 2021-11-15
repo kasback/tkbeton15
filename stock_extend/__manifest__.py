@@ -12,7 +12,6 @@
     "init_xml": [],
     'data': [
         'data/data.xml',
-        'security/ir.model.access.csv',
         'views/stock_picking_views.xml',
         'views/res_partner_views.xml',
         # 'views/citerne_views.xml',
