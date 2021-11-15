@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="reinitialize_service_view" model="ir.ui.view">
+            <field name="name">Reintialiser les compteurs</field>
+            <field name="model">reinitialize.service.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Reintialiser les compteurs">
+                    <group>
+                        <field name="multiple_equipments" invisible="1"/>
+                        <field name="equipment_id" readonly="1" attrs="{'invisible' : [('multiple_equipments', '=', True)]}"/>
+                        <field name="odometer" readonly="1" attrs="{'invisible' : [('multiple_equipments', '=', True)]}"/>
+                    </group>
+                    <field name="line_ids">
+                        <tree editable="bottom">
+                            <field name="service_line_id" attrs="{'column_invisible': True}"/>
+                            <field name="product_id" />
+                            <field name="compteur" />
+                            <field name="frequency" />
+                            <field name="odometer" />
+                            <field name="reinitialize"/>
+                        </tree>
+                    </field>
+                    <footer>
+                        <button string="Confirm" name="reinitialize" type="object" default_focus="1"
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_reinitialize_service" model="ir.actions.act_window">
+            <field name="name">Action: reintialiser le service</field>
+            <field name="res_model">reinitialize.service.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="reinitialize_service_view"/>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="maintenance.model_maintenance_equipment"/>
+        </record>
+    </data>
+</odoo>

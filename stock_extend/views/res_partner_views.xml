@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="inherit_res_partner_transporteur_form" model="ir.ui.view">
+            <field name="name">inherit.res.partner.transporteur.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group[1]/group[1]" postion="inside">
+                    <field name="is_transporteur"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_partner_transporteur_filter" model="ir.ui.view">
+            <field name="name">res.partner.select.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='inactive']" position="before">
+                    <filter string="Transporteurs" name="is_transporteur"
+                            domain="[('is_transporteur', '=', True)]"/>
+                    <filter string="Fournisseurs Local" name="is_fournisseurs_interne"
+                            domain="[('category_id', 'ilike', 'Fournisseur Local')]"/>
+                    <filter string="Fournisseurs Import" name="is_fournisseurs_import"
+                            domain="[('category_id', 'ilike', 'Fournisseur Étranger')]"/>
+                    <filter string="Fournisseurs Parc Auto" name="is_fournisseurs_parc_auto"
+                            domain="[('category_id', 'ilike', 'Fournisseur Parc Auto')]"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

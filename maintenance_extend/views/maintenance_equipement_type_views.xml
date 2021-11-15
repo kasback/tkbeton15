@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="maintenance_equipment_type_form" model="ir.ui.view">
+        <field name="name">maintenance.equipment.type.form</field>
+        <field name="model">maintenance.equipment.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="maintenance_equipment_type_tree" model="ir.ui.view">
+        <field name="name">maintenance.equipment.type.tree</field>
+        <field name="model">maintenance.equipment.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="open_view_equipement_type" model="ir.actions.act_window">
+        <field name="name">Types d'équipements</field>
+        <field name="res_model">maintenance.equipment.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Types d'équipements"
+              id="equipement_type_menu_item"
+              action="open_view_equipement_type"
+              parent="maintenance.menu_maintenance_configuration"
+    />
+    
+</odoo>

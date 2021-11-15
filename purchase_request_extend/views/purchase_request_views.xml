@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="purchase_request_form_inherit" model="ir.ui.view">
+            <field name="name">purchase.request.form.inherit</field>
+            <field name="model">purchase.request</field>
+            <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/header/button[4]" position="replace">
+                    <field name="show_tender_btn" invisible="1"/>
+                    <button
+                            name="create_tender"
+                            string="Créer Convention d'achat"
+                            type="object"
+                            attrs="{'invisible': ['|', ('show_tender_btn', '=', False), ('state', '!=', 'approved')]}"
+                    />
+                    <button
+                            name="%(purchase_request.action_purchase_request_line_make_purchase_order)d"
+                            string="Create RFQ"
+                            type="action"
+                            attrs="{'invisible': ['|', ('show_tender_btn', '!=', False), ('state', '!=', 'approved')]}"
+                    />
+                </xpath>
+                <xpath expr="//button[@name='button_approved']" position="replace">
+                    <field name="can_approve" invisible="1"/>
+                    <field name="can_approve_resp" invisible="1"/>
+                    <field name="can_approve_daf" invisible="1"/>
+                    <field name="can_approve_dg" invisible="1"/>
+                    <button
+                            name="button_approved_resp"
+                            string="Validation Supérieur"
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': [('can_approve_resp', '=', False)]}"
+                    />
+
+                    <button
+                            name="button_approved"
+                            string="Validation Responsable Achat"
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': [('can_approve', '=', False)]}"
+                    />
+
+                    <button
+                            name="button_approved_daf"
+                            string="Validation DAF"
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': [('can_approve_daf', '=', False)]}"
+                    />
+                    <button
+                            name="button_approved_dg"
+                            string="Validation DG"
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': [('can_approve_dg', '=', False)]}"
+                    />
+
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/tree/field[@name='product_id']" position="after">
+                    <field name="supplier_id" domain="[('supplier_rank', '>', 0)]"/>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/form/sheet/group[@name='main']/group/field[@name='product_id']"
+                       position="after">
+                    <field name="supplier_id" domain="[('supplier_rank', '>', 0)]"/>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/form/sheet/group[@name='main']/group/field[@name='product_id']"
+                       position="attributes">
+                    <attribute name="options">{'no_create': True}</attribute>
+                </xpath>
+                <field name="assigned_to" position="attributes">
+                    <attribute name="widget">selection</attribute>
+                    <attribute name="readonly">1</attribute>
+                    <attribute name="string">Responsable Achat</attribute>
+                </field>
+                <field name="assigned_to" position="before">
+                    <field name="purchase_type"/>
+                    <field name="purchase_reason"/>
+                    <field name="purchase_product_type"/>
+                </field>
+                <field name="assigned_to" position="after">
+                    <field name="responsible_id"/>
+                    <field name="dg_id" readonly="1" invisible="1"/>
+                    <field name="daf_id" readonly="1" invisible="1"/>
+                    <field name="tender_id"/>
+                </field>
+                <field name="group_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <xpath expr="//field[@name='line_ids']/tree/field[@name='analytic_account_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/tree/field[@name='analytic_tag_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/form/sheet/group[1]/group/field[@name='analytic_account_id']"
+                       position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/form/sheet/group[1]/group/field[@name='analytic_tag_ids']"
+                       position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/form/sheet/group[1]/group/field[@name='product_id']"
+                       position="before">
+                    <field name="purchase_type" invisible="0"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="purchase_request_tree_inherit" model="ir.ui.view">
+            <field name="name">purchase.request.tree.inherit</field>
+            <field name="model">purchase.request</field>
+            <field name="inherit_id" ref="purchase_request.view_purchase_request_tree"/>
+            <field name="arch" type="xml">
+                <field name="requested_by" position="after">
+                    <field name="purchase_reason"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="purchase_request_search_inherit" model="ir.ui.view">
+            <field name="name">purchase.request.search.inherit</field>
+            <field name="model">purchase.request</field>
+            <field name="inherit_id" ref="purchase_request.view_purchase_request_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search/filter[@name='unassigned']" position="after">
+                    <filter
+                            name="sup_hie"
+                            string="À superviser"
+                            domain="[('responsible_id','=', uid)]"
+                    />
+                    <filter
+                            name="purchase_reason"
+                            string="Urgent"
+                            domain="[('purchase_reason','=', 'urgent')]"
+                    />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

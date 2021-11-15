@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_edit_project_inherit_type_form" model="ir.ui.view">
+        <field name="name">project.project.view.type.inherit</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="type"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_task_form2_inherit_supplier_rating" model="ir.ui.view">
+        <field name="name">project.task.form.supplier.rating</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[1]" position="before">
+                <page string="Évaluation" attrs="{'invisible' : [('project_type', 'not in', ('selection', 'eval'))]}">
+                    <group attrs="{'invisible': [('project_type', '=', 'selection')] , 'readonly': [('all_read_only', '=', True)]}">
+                        <field name="all_read_only" invisible="1"/>
+                        <label for="rating_date_end" string="Période"/>
+                        <div class="o_row o_row_readonly o_hr_holidays_dates">
+                            <span class="oe_inline">
+                                De
+                            </span>
+                            <field name="rating_date_start" class="oe_inline" nolabel="1"/>
+                            <span class="oe_inline">
+                                À
+                            </span>
+                            <field name="rating_date_end" class="oe_inline"/>
+                        </div>
+
+                    </group>
+                    <group attrs="{'readonly': [('all_read_only', '=', True)]}">
+                        <field name="project_type" invisible="1"/>
+                        <field name="selected_supplier_id" domain="[('supplier_rank', '>', 0)]"
+                               attrs="{'invisible': [('project_type', '!=', 'selection')], 'readonly': True}"/>
+                        <field name="evaluated_supplier_id" domain="[('supplier_rank', '>', 0)]"
+                               attrs="{'invisible': [('project_type', '!=', 'eval')]}"/>
+                        <field name="product_ids" widget="many2many_tags"/>
+                        <field name="note" readonly="1"/>
+                    </group>
+
+                    <field name="rating_line_ids" attrs="{'readonly': [('all_read_only', '=', True)]}">
+                        <tree editable="bottom">
+                            <field name="rating_id"/>
+                            <field name="rating_mark_id"/>
+                            <field name="mark"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_tree2_inherit_supplier_rating" model="ir.ui.view">
+        <field name="name">project.task.form.supplier.rating</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="arch" type="xml">
+            <field name="project_id" position="after">
+                <field name="note" />
+            </field>
+        </field>
+    </record>
+</odoo>

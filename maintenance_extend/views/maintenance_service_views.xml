@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="maintenance_service_form" model="ir.ui.view">
+        <field name="name">maintenance.service.line.form</field>
+        <field name="model">maintenance.service.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="equipment_id"/>
+                        <field name="product_id"/>
+                        <field name="frequency"/>
+                        <field name="odometer_unit"/>
+                        <field name="compteur"/>
+                        <field name="state"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="maintenance_service_tree" model="ir.ui.view">
+        <field name="name">maintenance.service.line.tree</field>
+        <field name="model">maintenance.service.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="equipment_id"/>
+                <field name="product_id"/>
+                <field name="frequency"/>
+                <field name="odometer_unit"/>
+                <field name="compteur"/>
+                <field name="state" widget="badge" decoration-success="state == 'far'"
+                       decoration-warning="state == 'close'" decoration-danger="state == 'past'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="maintenance_service_search" model="ir.ui.view">
+        <field name="name">maintenance.service.line.search</field>
+        <field name="model">maintenance.service.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="equipment_id"/>
+                <field name="product_id"/>
+                <group expand="1" string="Group By">
+                    <filter string="État" name="groupby_state" context="{'group_by': 'state'}"/>
+                    <filter string="Équipement" name="groupby_equipment" context="{'group_by': 'equipment_id'}"/>
+                    <filter string="Pièce" name="groupby_product" context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="open_view_equipment_service" model="ir.actions.act_window">
+        <field name="name">Lignes de Services</field>
+        <field name="res_model">maintenance.service.line</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="equipment_service_reinitialize_action_server" model="ir.actions.server">
+        <field name="name">Réinitialiser les compteurs</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="maintenance_extend.model_maintenance_service_line"/>
+        <field name="binding_model_id" ref="maintenance_extend.model_maintenance_service_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.open_reinitialize_wizard()
+        </field>
+    </record>
+
+    <record id="equipment_service_mrp_action_server" model="ir.actions.server">
+        <field name="name">Créer les demandes de maintenance</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="maintenance_extend.model_maintenance_service_line"/>
+        <field name="binding_model_id" ref="maintenance_extend.model_maintenance_service_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.service_create_maintenance_request()
+        </field>
+    </record>
+
+    <menuitem name="Lignes de Services"
+              id="maintenance_service_menu_item"
+              action="open_view_equipment_service"
+              parent="maintenance.menu_equipment_form"
+    />
+
+</odoo>

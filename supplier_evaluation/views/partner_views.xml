@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_property_form_inherit_score" model="ir.ui.view">
+        <field name="name">res.partner.property.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <field name="property_supplier_payment_term_id" position="after">
+                <field name="periodicity"/>
+                <field name="score"/>
+                <field name="supplier_rank"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="partner_kanban_view_inherit_score" model="ir.ui.view">
+            <field name="name">res.partner.kanban.inherit.score</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//li[@t-if='record.email.raw_value']" position="after">
+                    <li t-if="record.score.raw_value" class="o_text_overflow"><span>Score : </span><field name="score"/></li>
+                </xpath>
+            </field>
+    </record>
+
+    <record id="act_res_partner_2_supplier_selection" model="ir.actions.act_window">
+        <field name="name">Selection Fournisseur</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record id="act_res_partner_2_supplier_eval" model="ir.actions.act_window">
+        <field name="name">Évaluations Fournisseur</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('supplier_id', '=', active_id), ('project_type', '=', 'eval')]</field>
+        <field name="context">{'default_supplier_id': active_id, 'search_default_supplier_id': active_id}</field>
+    </record>
+
+    <record id="res_partner_view_buttons_supplier_selection" model="ir.ui.view">
+        <field name="name">res.partner.view.buttons.supplier.selection</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+<!--
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" type="action" name="%(act_res_partner_2_supplier_selection)d"
+                        context="{'search_default_selected_supplier_id': active_id, 'default_selected_supplier_id': active_id}"
+                        icon="fa-tasks">
+                    <field string="Tasks" name="selection_count" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" name="%(supplier_evaluation.act_res_partner_2_supplier_eval)d"
+                        type="action"
+                        icon="fa-pencil-square-o" help="Évaluations Fournisseur">
+                    <field string="Évaluations Fournisseur" name="evaluation_count" widget="statinfo"/>
+                </button>
+            </div>
+-->
+            <xpath expr="//notebook" position="inside">
+                <page string="Évaluations">
+                    <field name="selection_ids"/>
+                    <field name="evaluation_ids"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

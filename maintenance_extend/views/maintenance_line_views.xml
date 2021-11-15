@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="maintenance_line_form" model="ir.ui.view">
+        <field name="name">maintenance.line.form</field>
+        <field name="model">maintenance.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="equipment_id"/>
+                        <field name="type_ids"/>
+                        <field name="nature"/>
+                        <field name="frequency"/>
+                        <field name="day_of_week"
+                               attrs="{'invisible' : [('frequency', 'in', ('day', 'week'))]}"/>
+                        <field name="last_maintenance_date"/>
+                        <field name="next_maintenance_date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="maintenance_line_tree" model="ir.ui.view">
+        <field name="name">maintenance.line.tree</field>
+        <field name="model">maintenance.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="equipment_id"/>
+                <field name="type_ids"/>
+                <field name="nature"/>
+                <field name="frequency"/>
+                <field name="day_of_week"
+                       attrs="{'invisible' : [('frequency', 'in', ('day', 'week'))]}"/>
+                <field name="last_maintenance_date"/>
+                <field name="next_maintenance_date"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="maintenance_line_search" model="ir.ui.view">
+        <field name="name">maintenance.line.search</field>
+        <field name="model">maintenance.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="equipment_id" string="Équipement"/>
+                <filter string="En retard d'audit" name="audit_past"
+                        domain="[('next_maintenance_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="À auditer ajourdhui" name="audit_today"
+                        domain="[('next_maintenance_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Audit de cette semaine" name="audit_week"
+                        domain="[('next_maintenance_date', '&gt;', context_today().strftime('%Y-%m-%d')),
+                        ('next_maintenance_date', '&lt;=', (context_today() + datetime.timedelta(7)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Mécanique" name="equipement_mecanique"
+                        domain="[('type_ids', 'ilike', 'Mécanique')]"/>
+                <filter string="Hydraulique" name="equipement_hydraulique"
+                        domain="[('type_ids', 'ilike', 'Hydraulique')]"/>
+                <filter string="Électrique" name="equipement_electrique"
+                        domain="[('type_ids', 'ilike', 'Électrique')]"/>
+                <group expand="1" string="Group By">
+                    <filter string="Équipement" name="groupby_equipment" context="{'group_by': 'equipment_id'}"/>
+                    <filter string="Date d'audit" name="audit_date_group" domain="[]"
+                            context="{'group_by': 'next_maintenance_date'}"/>
+                    <filter string="Type d'équipement" name="type_id_group" domain="[]"
+                            context="{'group_by': 'type_ids'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="create_maintenance_line_action" model="ir.actions.server">
+        <field name="name">Créer maintenance</field>
+        <field name="model_id" ref="maintenance_extend.model_maintenance_line"/>
+        <field name="binding_model_id" ref="maintenance_extend.model_maintenance_line"/>
+        <field name="state">code</field>
+        <field name="binding_view_types">list</field>
+        <field name="code">action = records.create_maintenance_from_equipment()</field>
+    </record>
+
+
+    <record id="open_view_equipment_maintenance_line" model="ir.actions.act_window">
+        <field name="name">Audit de maintenance</field>
+        <field name="res_model">maintenance.line</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record model="res.groups" id="group_dg">
+            <field name="name">DG</field>
+        </record>
+
+        <record model="res.groups" id="group_daf">
+            <field name="name">DAF</field>
+        </record>
+
+        <record model="res.groups" id="group_al">
+            <field name="name">Responsable achat local</field>
+        </record>
+
+        <record model="res.groups" id="group_ai">
+            <field name="name">Responsable Achat import</field>
+        </record>
+    <record model="res.groups" id="group_supplier_rating">
+        <field name="name">Évaluation fournisseur</field>
+    </record>
+</odoo>
