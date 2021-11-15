@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_fleet_recharge,access_fleet.recharge user,model_fleet_recharge,base.group_user,1,1,1,1
-access_fleet_citerne,access_fleet.citerne user,model_fleet_citerne,base.group_user,1,1,1,1
