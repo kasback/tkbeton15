@@ -12,6 +12,7 @@
                 <field name="location_id" position="after">
                     <field name="transporteur_id" domain="[('is_transporteur', '=', True)]"/>
                     <field name="depart_usine" attrs="{'invisible': [('transporteur_id', '=', False)]}"/>
+                    <field name="city" attrs="{'invisible': [('transporteur_id', '=', False)]}" domain="[('name', 'ilike', 'Transport')]"/>
                     <field name="real_date"/>
                 </field>
                 <xpath expr="//div[@class='oe_title']" position="inside">
