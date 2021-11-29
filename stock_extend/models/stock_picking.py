@@ -16,8 +16,9 @@ class StockPicking(models.Model):
 
     transporteur_id = fields.Many2one('res.partner', string='Transporteur')
     supplier_number = fields.Char('BL fournisseur')
-    real_date = fields.Datetime('Date Effective', required=True)
+    real_date = fields.Datetime('Date Effective', required=False)
     depart_usine = fields.Boolean('Départ Usine', default=False)
+    city = fields.Many2one('product.product', 'Ville')
 
     def button_validate(self):
         if self.depart_usine:
@@ -33,11 +34,12 @@ class StockPicking(models.Model):
                         'depart_usine': True,
                         'order_line': [
                             (0, 0, {
-                                'name': trsp_product_id.name,
-                                'product_id': trsp_product_id.id,
+                                'name': self.city.name,
+                                'product_id': self.city.id,
                                 'product_qty': move_line[0].quantity_done,
-                                'product_uom': trsp_product_id.uom_po_id.id,
-                                'price_unit': 0.0,
+                                # 'product_uom': trsp_product_id.uom_po_id.id,
+                                'product_uom': 1,
+                                'price_unit': self.city.standard_price,
                                 'date_planned': datetime.datetime.today(),
                                 'taxes_id': self.env.ref('l10n_maroc.1_141'),
                             })
