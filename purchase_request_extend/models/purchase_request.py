@@ -111,6 +111,32 @@ class PurchaseRequest(models.Model):
         default=True,
     )
 
+    @api.model
+    def create(self, vals):
+        res = super(PurchaseRequest, self).create(vals)
+        if 'responsible_id' in vals:
+            user_id = self.sudo().env['res.users'].browse(vals['responsible_id'])
+            activity_id = self.env['mail.activity'].with_user(user_id).create({
+                'summary': 'Demande d\'achat numéro ' + vals['name'] + ' à approuver',
+                'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
+                'res_model_id': self.env['ir.model'].search([('model', '=', 'purchase.request')], limit=1).id,
+                'note': "",
+                'res_id': res.id,
+                'user_id': user_id.id
+            })
+        new_product_group_users = self.env.ref('purchase_request_extend.groups_new_product_purchase_alert').users
+        if new_product_group_users:
+            for user in new_product_group_users:
+                activity_id = self.env['mail.activity'].with_user(user).create({
+                    'summary': 'Alerte demande d\'achat d\'un nouveau produit ' + vals['name'],
+                    'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
+                    'res_model_id': self.env['ir.model'].search([('model', '=', 'purchase.request')], limit=1).id,
+                    'note': "",
+                    'res_id': res.id,
+                    'user_id': user.id
+                })
+        return res
+
     @api.depends('purchase_product_type')
     def _compute_show_tender_btn(self):
         for rec in self:

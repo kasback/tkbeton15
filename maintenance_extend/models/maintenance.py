@@ -43,6 +43,7 @@ class MaintenanceEquipment(models.Model):
     license_plate = fields.Char(string='Immatriculation')
     maintenance_line_ids = fields.One2many('maintenance.line', 'equipment_id', 'Lignes de maintenance')
     maintenance_service_ids = fields.One2many('maintenance.service.line', 'equipment_id', 'Lignes des services')
+    group_id = fields.Many2one('maintenance.equipment', 'Autocompletion des lignes de services')
 
     def _cons_count(self):
         for rec in self:
@@ -56,6 +57,22 @@ class MaintenanceEquipment(models.Model):
                 record.odometer = vehicle_odometer.value
             else:
                 record.odometer = 0
+
+    @api.onchange('group_id')
+    def _on_change_group_id(self):
+        res = []
+        for service_line in self.group_id.maintenance_service_ids:
+            line_vals = {
+                'type_id': service_line.type_id.id,
+                'product_id': service_line.product_id.id,
+                'name': service_line.name,
+                'compteur': service_line.compteur,
+                'frequency': service_line.frequency,
+                'odometer_unit': service_line.odometer_unit,
+                'equipment_id': self.id
+            }
+            res.append((0, 0, line_vals))
+        self.maintenance_service_ids = res
 
     def _set_odometer(self):
         for record in self:

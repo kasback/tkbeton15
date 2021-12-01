@@ -7,7 +7,9 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="open_audit_lines" type="object" string="Démarrer l'Audit" />
+                    <button name="open_audit_lines" type="object" string="Lignes de l'audit" />
+                    <button name="validate_audit" type="object" string="Valider" states="open"/>
+                    <field name="state" widget="statusbar" />
                 </header>
                 <sheet>
                     <group>

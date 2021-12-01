@@ -14,7 +14,12 @@ class MaintenanceLine(models.Model):
     product_id = fields.Many2one('product.product', 'Fourniture')
     type_ids = fields.Many2one('maintenance.equipment.type', string='Types de maintenance')
     nature = fields.Char('Nature')
-    frequency = fields.Selection([('day', 'Journalière'), ('week', 'Hebdomadaire'), ('month', 'Mensuelle')], default='day',
+    frequency = fields.Selection([('day', 'Journalière'),
+                                  ('week', 'Hebdomadaire'),
+                                  ('month', 'Mensuelle'),
+                                  ('tri', 'Trimestrielle'),
+                                  ('year', 'Annuelle'),
+                                  ], default='day',
                                  string="Fréquence")
     day_of_week = fields.Selection([
         ('0', 'Lundi'),
@@ -66,6 +71,10 @@ class MaintenanceLine(models.Model):
                 rec.next_maintenance_date = datetime.date(year, month, last_day_of_month.day)
             elif rec.frequency == 'week':
                 rec.next_maintenance_date = rec.last_maintenance_date + datetime.timedelta(weeks=1)
+            elif rec.frequency == 'tri':
+                rec.next_maintenance_date = rec.last_maintenance_date + datetime.timedelta(days=90)
+            elif rec.frequency == 'year':
+                rec.next_maintenance_date = rec.last_maintenance_date + datetime.timedelta(days=365)
             else:
                 rec.next_maintenance_date = rec.last_maintenance_date + datetime.timedelta(days=1)
 

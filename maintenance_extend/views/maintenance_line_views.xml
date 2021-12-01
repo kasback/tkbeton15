@@ -13,7 +13,7 @@
                         <field name="nature"/>
                         <field name="frequency"/>
                         <field name="day_of_week"
-                               attrs="{'invisible' : [('frequency', 'in', ('day', 'week'))]}"/>
+                               attrs="{'invisible' : [('frequency', 'in', ('day', 'week', 'tri', 'year'))]}"/>
                         <field name="last_maintenance_date"/>
                         <field name="next_maintenance_date"/>
                     </group>

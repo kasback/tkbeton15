@@ -12,6 +12,7 @@
     "init_xml": [],
     'data': [
         'data/data.xml',
+        'security/groups.xml',
         'views/purchase_request_views.xml',
         'views/purchase_order_views.xml',
     ],
