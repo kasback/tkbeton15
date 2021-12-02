@@ -29,6 +29,7 @@ class ServiceLine(models.Model):
     frequency = fields.Float('Fréquence')
     odometer_unit = fields.Selection(related='equipment_id.odometer_unit', string='Unité')
     compteur = fields.Integer('Compteur')
+    type_id = fields.Many2one('maintenance.equipment.type', string='Types de service')
 
     @api.depends('equipment_id.odometer_ids', 'compteur')
     def compute_service_state(self):

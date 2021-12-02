@@ -10,6 +10,7 @@ from odoo.exceptions import ValidationError
 class MaintenanceAudit(models.Model):
     _name = 'maintenance.audit'
 
+    state = fields.Selection([('open', 'En cous'), ('closed', 'Fermé')], default='open')
     name = fields.Char('Numéro')
     date = fields.Date('Date d\'audit')
     audit_lines = fields.One2many('maintenance.audit.line', 'audit_id', string='Lignes d\'audit')
@@ -29,7 +30,7 @@ class MaintenanceAudit(models.Model):
                     'next_maintenance_date': line.next_maintenance_date,
                 }))
             audit_id = self.env['maintenance.audit'].create({
-                'name': 'Audit ' + maintenance_lines[0].date,
+                'name': 'Audit ' + str(maintenance_lines[0].next_maintenance_date),
                 'audit_lines': res
             })
 
@@ -38,6 +39,25 @@ class MaintenanceAudit(models.Model):
         action['domain'] = [('audit_id', '=', self.id)]
         action['context'] = {'default_audit_id': self.id}
         return action
+
+    def validate_audit(self):
+        for rec in self.audit_lines:
+            if not rec.is_ok:
+                Maintenance = self.env['maintenance.request']
+                Maintenance.create({
+                    'name': 'Maintenance - %s - %s - %s' % (rec.equipment_id.name, self.name, rec.type_ids.name),
+                    'request_date': fields.Date.today(),
+                    'schedule_date': fields.Date.today(),
+                    'equipment_id': rec.equipment_id.id,
+                    'maintenance_type': 'corrective',
+                    'owner_user_id': rec.equipment_id.owner_user_id.id,
+                    'user_id': rec.equipment_id.technician_user_id.id,
+                    'maintenance_team_id': self.env.ref('maintenance.equipment_team_maintenance').id,
+                    'company_id': self.env.company.id
+                })
+        self.write({
+            'state': 'closed'
+        })
 
 
 class MaintenanceAuditLine(models.Model):
@@ -48,6 +68,6 @@ class MaintenanceAuditLine(models.Model):
     equipment_id = fields.Many2one('maintenance.equipment', string='Equipement')
     maintenance_equipment_id = fields.Many2one('maintenance.equipment', string='Equipement')
     type_ids = fields.Many2one('maintenance.equipment.type', string='Type de maintenance')
-    nature = fields.Char(string='Type de maintenance')
+    nature = fields.Char(string='Nature')
     next_maintenance_date = fields.Date(string='Date de maintenance')
     is_ok = fields.Boolean(string='Ok', default=False)

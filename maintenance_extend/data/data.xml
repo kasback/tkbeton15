@@ -10,11 +10,8 @@
         <record id="maintenance_equipment_mecanique_type" model="maintenance.equipment.type">
             <field name="name">Mécanique</field>
         </record>
-        <record id="maintenance_equipment_vehicle_type" model="maintenance.equipment.type">
-            <field name="name">Véhicules</field>
-        </record>
-        <record id="maintenance_equipment_engin_type" model="maintenance.equipment.type">
-            <field name="name">Engins</field>
+        <record id="maintenance_equipment_pneu_type" model="maintenance.equipment.type">
+            <field name="name">Pneumatique</field>
         </record>
         <record id="maintenance_service_configuration" model="maintenance.service.configuration">
             <field name="min_km">5000</field>

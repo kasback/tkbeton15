@@ -81,7 +81,8 @@ class PurchaseRequest(models.Model):
     responsible_id = fields.Many2one('res.users', related='requested_by.employee_id.parent_id.user_id',
                                      string='Supérieur hiérarchique', store=True)
     dg_id = fields.Many2one('res.users', string='DG', domain=lambda self: self._get_dg_task_domain(), default=_get_dg)
-    daf_id = fields.Many2one('res.users', string='DAF', domain=lambda self: self._get_daf_task_domain(), default=_get_daf)
+    daf_id = fields.Many2one('res.users', string='DAF', domain=lambda self: self._get_daf_task_domain(),
+                             default=_get_daf)
     can_approve = fields.Boolean('Peut approuver', compute='_can_approve')
     can_approve_resp = fields.Boolean('Responsable Peut approuver', compute='_can_approve_resp')
     can_approve_daf = fields.Boolean('DAF Peut approuver', compute='_can_approve_daf')
@@ -101,8 +102,8 @@ class PurchaseRequest(models.Model):
     )
 
     purchase_product_type = fields.Selection(selection=get_purchase_product_type_selection,
-        default='existing',
-        string='Type de produit')
+                                             default='existing',
+                                             string='Type de produit')
     show_tender_btn = fields.Boolean('Montrer le button CA', compute='_compute_show_tender_btn')
     tender_id = fields.Many2one('purchase.requisition', string='Convention d\'achat')
     active = fields.Boolean(
@@ -111,17 +112,36 @@ class PurchaseRequest(models.Model):
         default=True,
     )
 
+    @api.model
+    def create(self, vals):
+        res = super(PurchaseRequest, self).create(vals)
+        new_product_group_users = self.env.ref('purchase_request_extend.groups_new_product_purchase_alert').users
+        if new_product_group_users:
+            for user in new_product_group_users:
+                if 'purchase_product_type' in vals and vals['purchase_product_type'] == 'new':
+                    activity_id = self.env['mail.activity'].with_user(user).create({
+                        'summary': 'Alerte demande d\'achat d\'un nouveau produit ' + vals['name'],
+                        'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
+                        'res_model_id': self.env['ir.model'].search([('model', '=', 'purchase.request')], limit=1).id,
+                        'note': "",
+                        'res_id': res.id,
+                        'user_id': user.id
+                    })
+        return res
+
     @api.depends('purchase_product_type')
     def _compute_show_tender_btn(self):
         for rec in self:
-            if rec.purchase_product_type in ('new', 'price_change', 'negociation') and self.env.user.has_group('purchase_request.group_purchase_request_manager'):
+            if rec.purchase_product_type in ('new', 'price_change', 'negociation') and self.env.user.has_group(
+                    'purchase_request.group_purchase_request_manager'):
                 rec.show_tender_btn = True
             else:
                 rec.show_tender_btn = False
 
     def create_tender(self):
 
-        tender_line_ids = [(0, 0, {'product_id': x.product_id.id if x.product_id else self.env.ref('purchase_request_extend.product_product_new').id,
+        tender_line_ids = [(0, 0, {'product_id': x.product_id.id if x.product_id else self.env.ref(
+            'purchase_request_extend.product_product_new').id,
                                    'product_qty': x.product_qty,
                                    'product_uom_id': x.product_id.uom_id.id,
                                    'price_unit': x.estimated_cost,
@@ -152,6 +172,15 @@ class PurchaseRequest(models.Model):
         return self.write({"state": "to_approve"})
 
     def button_to_approve(self):
+        user_id = self.sudo().env['res.users'].browse(self.responsible_id.id)
+        activity_id = self.env['mail.activity'].with_user(user_id).create({
+            'summary': 'Demande d\'achat numéro ' + self.name + ' à approuver',
+            'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
+            'res_model_id': self.env['ir.model'].search([('model', '=', 'purchase.request')], limit=1).id,
+            'note': "",
+            'res_id': self.id,
+            'user_id': self.responsible_id.id
+        })
         return self.write({"state": "superieur_approval"})
 
     def button_approved(self):
