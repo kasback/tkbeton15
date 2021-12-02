@@ -119,10 +119,10 @@ class PurchaseRequest(models.Model):
         if new_product_group_users:
             for user in new_product_group_users:
                 if 'purchase_product_type' in vals and vals['purchase_product_type'] == 'new':
-                    activity_id = self.env['mail.activity'].with_user(user).create({
+                    activity_id = self.sudo().env['mail.activity'].create({
                         'summary': 'Alerte demande d\'achat d\'un nouveau produit ' + vals['name'],
-                        'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
-                        'res_model_id': self.env['ir.model'].search([('model', '=', 'purchase.request')], limit=1).id,
+                        'activity_type_id': self.sudo().env.ref('mail.mail_activity_data_todo').id,
+                        'res_model_id': self.sudo().env['ir.model'].search([('model', '=', 'purchase.request')], limit=1).id,
                         'note': "",
                         'res_id': res.id,
                         'user_id': user.id
@@ -173,10 +173,10 @@ class PurchaseRequest(models.Model):
 
     def button_to_approve(self):
         user_id = self.sudo().env['res.users'].browse(self.responsible_id.id)
-        activity_id = self.env['mail.activity'].with_user(user_id).create({
+        activity_id = self.sudo().env['mail.activity'].create({
             'summary': 'Demande d\'achat numéro ' + self.name + ' à approuver',
-            'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
-            'res_model_id': self.env['ir.model'].search([('model', '=', 'purchase.request')], limit=1).id,
+            'activity_type_id': self.sudo().env.ref('mail.mail_activity_data_todo').id,
+            'res_model_id': self.sudo().env['ir.model'].search([('model', '=', 'purchase.request')], limit=1).id,
             'note': "",
             'res_id': self.id,
             'user_id': self.responsible_id.id
