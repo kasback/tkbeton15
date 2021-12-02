@@ -118,14 +118,15 @@ class PurchaseRequest(models.Model):
         new_product_group_users = self.env.ref('purchase_request_extend.groups_new_product_purchase_alert').users
         if new_product_group_users:
             for user in new_product_group_users:
-                activity_id = self.env['mail.activity'].with_user(user).create({
-                    'summary': 'Alerte demande d\'achat d\'un nouveau produit ' + vals['name'],
-                    'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
-                    'res_model_id': self.env['ir.model'].search([('model', '=', 'purchase.request')], limit=1).id,
-                    'note': "",
-                    'res_id': res.id,
-                    'user_id': user.id
-                })
+                if 'purchase_product_type' in vals and vals['purchase_product_type'] == 'new':
+                    activity_id = self.env['mail.activity'].with_user(user).create({
+                        'summary': 'Alerte demande d\'achat d\'un nouveau produit ' + vals['name'],
+                        'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
+                        'res_model_id': self.env['ir.model'].search([('model', '=', 'purchase.request')], limit=1).id,
+                        'note': "",
+                        'res_id': res.id,
+                        'user_id': user.id
+                    })
         return res
 
     @api.depends('purchase_product_type')
