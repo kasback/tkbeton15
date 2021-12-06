@@ -41,7 +41,7 @@ class StockPicking(models.Model):
                                 'product_uom': 1,
                                 'price_unit': self.city.standard_price,
                                 'date_planned': datetime.datetime.today(),
-                                'taxes_id': self.env.ref('l10n_maroc.1_141'),
+                                'taxes_id': self.env['account.tax'].search([('code', '=', '141'), ('company_id', '=', self.env.company.id)]),
                             })
                         ]
                     })
