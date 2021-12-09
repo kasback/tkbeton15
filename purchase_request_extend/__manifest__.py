@@ -12,6 +12,8 @@
     "init_xml": [],
     'data': [
         'data/data.xml',
+        'report/purchase_order_report_templates.xml',
+        'report/report.xml',
         'security/groups.xml',
         'views/purchase_request_views.xml',
         'views/purchase_order_views.xml',

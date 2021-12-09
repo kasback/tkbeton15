@@ -12,6 +12,7 @@ class MaintenanceRequest(models.Model):
 
     mrp_ids = fields.One2many('mrp.production', 'maintenance_request_id', 'Réparations')
     count_reparations = fields.Integer('Comptage de réparations', compute='_get_mrp_count')
+    audit_id = fields.Many2one('maintenance.audit', string="Audit de maintenance")
 
     def _get_mrp_count(self):
         for rec in self:

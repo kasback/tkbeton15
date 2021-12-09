@@ -10,14 +10,21 @@ from odoo.exceptions import ValidationError
 class MaintenanceAudit(models.Model):
     _name = 'maintenance.audit'
 
-    state = fields.Selection([('open', 'En cous'), ('closed', 'Fermé')], default='open')
+    state = fields.Selection([('open', 'En cours'), ('closed', 'Fermé')], default='open')
     name = fields.Char('Numéro')
     date = fields.Date('Date d\'audit')
     audit_lines = fields.One2many('maintenance.audit.line', 'audit_id', string='Lignes d\'audit')
+    responsible_id = fields.Many2one('res.partner', 'Responsable')
+    maintenance_ids = fields.One2many('maintenance.request', 'audit_id', string='Maintenances')
+    maintenance_count = fields.Integer(string='Comptage des maintenances', compute='compute_maintenance_count')
 
-    def generate_audit(self):
-        maintenance_lines = self.env['maintenance.line'].search([('next_maintenance_date', '=', fields.Date.today())])
-        print('maintenance_lines', maintenance_lines)
+    def compute_maintenance_count(self):
+        for rec in self:
+            rec.maintenance_count = len(rec.maintenance_ids)
+
+    def generate_audit_lines(self):
+        maintenance_lines = self.env['maintenance.line'].search([('next_maintenance_date', '=', fields.Date.today()),
+                                                                 ('audit_id', '=', False)])
         res = []
         if maintenance_lines:
             for line in maintenance_lines:
@@ -41,10 +48,11 @@ class MaintenanceAudit(models.Model):
         return action
 
     def validate_audit(self):
+        generated_maintenances = []
         for rec in self.audit_lines:
             if not rec.is_ok:
                 Maintenance = self.env['maintenance.request']
-                Maintenance.create({
+                maintenance_id = Maintenance.create({
                     'name': 'Maintenance - %s - %s - %s' % (rec.equipment_id.name, self.name, rec.type_ids.name),
                     'request_date': fields.Date.today(),
                     'schedule_date': fields.Date.today(),
@@ -53,10 +61,16 @@ class MaintenanceAudit(models.Model):
                     'owner_user_id': rec.equipment_id.owner_user_id.id,
                     'user_id': rec.equipment_id.technician_user_id.id,
                     'maintenance_team_id': self.env.ref('maintenance.equipment_team_maintenance').id,
-                    'company_id': self.env.company.id
+                    'company_id': self.env.company.id,
+                    'description': rec.observation
                 })
+                generated_maintenances.append((4, maintenance_id.id))
+            rec.maintenance_line_id.write({
+                'last_maintenance_date': fields.date.today()
+            })
         self.write({
-            'state': 'closed'
+            'state': 'closed',
+            'maintenance_ids': generated_maintenances
         })
 
 
@@ -64,6 +78,7 @@ class MaintenanceAuditLine(models.Model):
     _name = 'maintenance.audit.line'
 
     audit_id = fields.Many2one('maintenance.audit', 'Audit')
+    state = fields.Selection(related='audit_id.state', string='État')
     maintenance_line_id = fields.Many2one('maintenance.line', string='Ligne de maintenance')
     equipment_id = fields.Many2one('maintenance.equipment', string='Equipement')
     maintenance_equipment_id = fields.Many2one('maintenance.equipment', string='Equipement')
@@ -71,3 +86,13 @@ class MaintenanceAuditLine(models.Model):
     nature = fields.Char(string='Nature')
     next_maintenance_date = fields.Date(string='Date de maintenance')
     is_ok = fields.Boolean(string='Ok', default=False)
+    observation = fields.Char('Observation')
+    frequency = fields.Selection([('day', 'Journalière'),
+                                  ('week', 'Hebdomadaire'),
+                                  ('month', 'Mensuelle'),
+                                  ('tri', 'Trimestrielle'),
+                                  ('year', 'Annuelle'),
+                                  ], default='day',
+                                 string="Fréquence")
+
+

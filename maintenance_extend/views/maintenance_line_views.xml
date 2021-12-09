@@ -6,6 +6,9 @@
         <field name="model">maintenance.line</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <field name="state" widget="status_bar"/>
+                </header>
                 <sheet>
                     <group>
                         <field name="equipment_id"/>
@@ -35,6 +38,8 @@
                        attrs="{'invisible' : [('frequency', 'in', ('day', 'week'))]}"/>
                 <field name="last_maintenance_date"/>
                 <field name="next_maintenance_date"/>
+                <field name="state" widget="badge" decoration-success="state == 'far'"
+                       decoration-warning="state == 'close'" decoration-danger="state == 'past'"/>
             </tree>
         </field>
     </record>
@@ -81,10 +86,39 @@
     </record>
 
 
-    <record id="open_view_equipment_maintenance_line" model="ir.actions.act_window">
-        <field name="name">Audit de maintenance</field>
+    <record id="open_view_equipment_maintenance_lines_for_audit" model="ir.actions.act_window">
+        <field name="name">Lignes de Maintenance à auditer</field>
+        <field name="res_model">maintenance.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('next_maintenance_date', '=', context_today().strftime('%Y-%m-%d'))]</field>
+    </record>
+
+    <record id="open_view_equipment_maintenance_lines" model="ir.actions.act_window">
+        <field name="name">Lignes de Maintenance</field>
         <field name="res_model">maintenance.line</field>
         <field name="view_mode">tree,form</field>
     </record>
 
+    <record id="maintenance_open_audit_wizard_action_server" model="ir.actions.server">
+        <field name="name">Créer un audit de maintenance</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="maintenance_extend.model_maintenance_line"/>
+        <field name="binding_model_id" ref="maintenance_extend.model_maintenance_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.open_create_audit_wizard()
+        </field>
+    </record>
+
+    <menuitem name="Lignes de Maintenance"
+              id="maintenance_line_menu_item"
+              action="open_view_equipment_maintenance_lines"
+              parent="maintenance.menu_equipment_form"
+    />
+    <menuitem name="Lignes de Maintenance à auditer"
+              id="maintenance_line_menu_item_for_audit"
+              action="open_view_equipment_maintenance_lines_for_audit"
+              parent="maintenance.menu_equipment_form"
+    />
 </odoo>

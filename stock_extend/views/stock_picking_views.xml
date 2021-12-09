@@ -14,6 +14,8 @@
                     <field name="depart_usine" attrs="{'invisible': [('transporteur_id', '=', False)]}"/>
                     <field name="city" attrs="{'invisible': [('transporteur_id', '=', False)]}" domain="[('name', 'ilike', 'Transport')]"/>
                     <field name="real_date"/>
+                    <field name="intercompany_transfer"/>
+                    <field name="company_dest_id" attrs="{'invisible': [('intercompany_transfer', '=', False)]}"/>
                 </field>
                 <xpath expr="//div[@class='oe_title']" position="inside">
                     <h2>
