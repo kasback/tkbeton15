@@ -10,7 +10,7 @@ from odoo.exceptions import ValidationError
 class MaintenanceAudit(models.Model):
     _name = 'maintenance.audit'
 
-    state = fields.Selection([('open', 'En cours'), ('closed', 'Fermé')], default='open')
+    state = fields.Selection([('open', 'En cours'), ('closed', 'Fermé')], default='open', string="État")
     name = fields.Char('Numéro')
     date = fields.Date('Date d\'audit')
     audit_lines = fields.One2many('maintenance.audit.line', 'audit_id', string='Lignes d\'audit')
@@ -71,6 +71,14 @@ class MaintenanceAudit(models.Model):
         self.write({
             'state': 'closed',
             'maintenance_ids': generated_maintenances
+        })
+
+    def to_draft(self):
+        if self.maintenance_ids:
+            raise ValidationError('Vous ne pouvez pas remettre en brouillon un audit avec des demandes de maintenances existantes, '
+                                  'Veuillez tout d\'abord les supprimer')
+        self.write({
+            'state': 'open'
         })
 
 

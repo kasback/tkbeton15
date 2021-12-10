@@ -18,6 +18,7 @@
                 <header>
                     <button name="open_audit_lines" type="object" string="Lignes de l'audit"/>
                     <button name="validate_audit" type="object" string="Valider" states="open"/>
+                    <button name="to_draft" type="object" string="Remettre en brouillon" states="closed"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -45,10 +46,10 @@
         <field name="model">maintenance.audit</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="state"/>
                 <field name="name"/>
                 <field name="date"/>
                 <field name="responsible_id"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>

@@ -24,6 +24,9 @@
                         </button>
                     </div>
                 </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="audit_id" readonly="1" />
+                </xpath>
             </field>
         </record>
 
