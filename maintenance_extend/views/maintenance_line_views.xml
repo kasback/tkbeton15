@@ -38,8 +38,9 @@
                        attrs="{'invisible' : [('frequency', 'in', ('day', 'week'))]}"/>
                 <field name="last_maintenance_date"/>
                 <field name="next_maintenance_date"/>
-                <field name="state" widget="badge" decoration-success="state == 'far'"
-                       decoration-warning="state == 'close'" decoration-danger="state == 'past'"/>
+                <field name="state" widget="badge" decoration-success="state == 'green'"
+                       decoration-warning="state == 'yellow'" decoration-danger="state == 'red'"
+                        decoration-info="state == 'grey'"/>
             </tree>
         </field>
     </record>

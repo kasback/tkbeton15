@@ -36,21 +36,24 @@ class MaintenanceLine(models.Model):
     state = fields.Selection([
         ('green', 'Éspacé'),
         ('yellow', 'S\'approche'),
-        ('red', 'Urgent'),
+        ('red', 'Aujourd\'hui'),
+        ('grey', 'Dépassé'),
     ], string='État', compute="compute_state")
 
     @api.depends('last_maintenance_date', 'next_maintenance_date')
     def compute_state(self):
         for rec in self:
-            diff = rec.last_maintenance_date - rec.next_maintenance_date
-            if diff:
-                diff_days = diff.days
-                if diff_days <= 0:
-                    rec.state = 'red'
-                elif 0 < diff_days <= 1:
-                    rec.state = 'yellow'
-                elif diff_days > 1:
-                    rec.state = 'green'
+            diff = rec.next_maintenance_date - fields.date.today()
+            print('diff', diff.days)
+            diff_days = diff.days
+            if diff_days < 0:
+                rec.state = 'grey'
+            if diff_days == 0:
+                rec.state = 'red'
+            elif 0 < diff_days <= 1:
+                rec.state = 'yellow'
+            elif diff_days > 1:
+                rec.state = 'green'
 
     @api.depends('last_maintenance_date', 'day_of_week', 'frequency')
     def _compute_next_maintenance(self):
