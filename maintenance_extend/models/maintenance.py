@@ -64,7 +64,7 @@ class MaintenanceEquipment(models.Model):
 
     def compute_equipment_unavailability_time(self):
         for rec in self:
-            rec.equipment_unavailability_time = sum(rec.maintenance_ids.mapped('equipment_unavailability_time')) / 60
+            rec.equipment_unavailability_time = sum(rec.maintenance_ids.mapped('equipment_unavailability_time'))
             rec.equipment_unavailability_time_in_days = sum(rec.maintenance_ids.mapped('equipment_unavailability_time_in_days'))
 
     def _cons_count(self):

@@ -12,7 +12,9 @@ class ProductProduct(models.Model):
     def _name_search(self, name='', args=None, operator='ilike', limit=100, name_get_uid=None):
         if args is None:
             args = []
-        domain = ['|', ('name', operator, name), ('product_template_variant_value_ids', operator, name)]
+        domain = ['|', ('name', operator, name),
+                  ('product_template_variant_value_ids', operator, name),
+                  ('default_code', operator, name)]
         return self._search(expression.AND([domain, args]), limit=limit, access_rights_uid=name_get_uid)
 
 
@@ -26,7 +28,7 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     transporteur_id = fields.Many2one('res.partner', string='Transporteur')
-    supplier_number = fields.Char('BL fournisseur')
+    supplier_number = fields.Char('BL fournisseur', required=True)
     real_date = fields.Datetime('Date Effective', required=False)
     depart_usine = fields.Boolean('Départ Usine', default=False)
     city = fields.Many2one('product.product', 'Ville')
