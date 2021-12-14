@@ -26,6 +26,9 @@
                 </xpath>
                 <xpath expr="//field[@name='category_id']" position="after">
                     <field name="audit_id" readonly="1" />
+                    <field name="date_start_unavailability" readonly="1" />
+                    <field name="equipment_unavailability_time" invisible="0" widget="float_time"/>
+                    <field name="equipment_unavailability_time_in_days" invisible="0"/>
                 </xpath>
             </field>
         </record>

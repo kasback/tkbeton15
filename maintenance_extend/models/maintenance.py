@@ -13,10 +13,24 @@ class MaintenanceRequest(models.Model):
     mrp_ids = fields.One2many('mrp.production', 'maintenance_request_id', 'Réparations')
     count_reparations = fields.Integer('Comptage de réparations', compute='_get_mrp_count')
     audit_id = fields.Many2one('maintenance.audit', string="Audit de maintenance")
+    date_start_unavailability = fields.Datetime('Date début d\'indisponibilité')
+    equipment_unavailability_time = fields.Float('Compteur d\'indisponibilité')
+    equipment_unavailability_time_in_days = fields.Float('Compteur d\'indisponibilité en jours')
 
     def _get_mrp_count(self):
         for rec in self:
             rec.count_reparations = len(rec.mrp_ids)
+
+    def write(self, vals):
+        if 'stage_id' in vals:
+            en_cours_stage_id = self.env.ref('maintenance.stage_1')
+            if vals['stage_id'] == en_cours_stage_id.id:
+                vals['date_start_unavailability'] = fields.Datetime.now()
+            if self.stage_id == en_cours_stage_id and vals['stage_id'] != en_cours_stage_id.id:
+                if self.date_start_unavailability:
+                    self.equipment_unavailability_time += (fields.Datetime.now() - self.date_start_unavailability).seconds / 60
+                    self.equipment_unavailability_time_in_days += (fields.Datetime.now() - self.date_start_unavailability).days
+        return super(MaintenanceRequest, self).write(vals)
 
 
 class MRP(models.Model):
@@ -45,6 +59,13 @@ class MaintenanceEquipment(models.Model):
     maintenance_line_ids = fields.One2many('maintenance.line', 'equipment_id', 'Lignes de maintenance')
     maintenance_service_ids = fields.One2many('maintenance.service.line', 'equipment_id', 'Lignes des services')
     group_id = fields.Many2one('maintenance.equipment', 'Autocompletion des lignes de services')
+    equipment_unavailability_time = fields.Float('Compteur d\'indisponibilité', compute='compute_equipment_unavailability_time')
+    equipment_unavailability_time_in_days = fields.Float('Compteur d\'indisponibilité en jours', compute='compute_equipment_unavailability_time')
+
+    def compute_equipment_unavailability_time(self):
+        for rec in self:
+            rec.equipment_unavailability_time = sum(rec.maintenance_ids.mapped('equipment_unavailability_time')) / 60
+            rec.equipment_unavailability_time_in_days = sum(rec.maintenance_ids.mapped('equipment_unavailability_time_in_days'))
 
     def _cons_count(self):
         for rec in self:

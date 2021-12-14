@@ -5,7 +5,7 @@
     'description': """""",
     'author': 'Osisoftware',
     'website': 'http://www.osisoftware.com',
-    'depends': ['maintenance', 'mrp'],
+    'depends': ['maintenance', 'hr', 'mrp'],
     'data': [
         'data/data.xml',
         'security/ir.model.access.csv',

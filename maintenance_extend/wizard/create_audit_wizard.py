@@ -6,7 +6,7 @@ from odoo import models, fields, api
 class CreateAuditWizard(models.TransientModel):
     _name = 'create.audit.wizard'
 
-    responsible_id = fields.Many2one('res.partner', 'Responsable', required=True)
+    responsible_id = fields.Many2one('hr.employee', 'Responsable', required=True)
     date = fields.Date('Date d\'audit', default=fields.Date.today(), required=True)
     maintenance_line_ids = fields.One2many('create.audit.wizard.line', 'create_audit_wizard_id', 'Lignes de maintenance')
 

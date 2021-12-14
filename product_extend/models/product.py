@@ -9,6 +9,13 @@ class ProductTemplate(models.Model):
 
     tag_ids = fields.Many2many('product.tags', string='Étiquettes')
     is_carburant = fields.Boolean('Est un carburant', default=False)
+    can_be_manufactured = fields.Boolean('Peut être produit', compute='compute_can_be_manufactured', store=True)
+
+    @api.depends('route_ids')
+    def compute_can_be_manufactured(self):
+        for rec in self:
+            manufacture_route_id = self.env.ref('mrp.route_warehouse0_manufacture')
+            rec.can_be_manufactured = any(rec.route_ids.filtered(lambda r: r == manufacture_route_id))
 
 
 class ProductProduct(models.Model):
