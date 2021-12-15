@@ -24,21 +24,28 @@
                         </button>
                     </div>
                 </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="audit_id" readonly="1" />
+                    <field name="date_start_unavailability" readonly="1" />
+                    <field name="equipment_unavailability_time" invisible="0" widget="float_time"/>
+                    <field name="equipment_unavailability_time_in_days" invisible="0"/>
+                </xpath>
             </field>
         </record>
 
-<!--
+
         <record id="inherit_maintenance_extend_tree" model="ir.ui.view">
             <field name="name">inherit.res.maintenance.extend.tree</field>
             <field name="model">maintenance.request</field>
             <field name="inherit_id" ref="maintenance.hr_equipment_request_view_tree"/>
             <field name="arch" type="xml">
-                <field name="lang" position="before">
-                    <field name="fax" widget="phone"/>
+                <field name="stage_id" position="after">
+                    <field name="audit_id" />
+                    <field name="description" />
                 </field>
             </field>
         </record>
-        <record id="inherit_maintenance_extend_kanban" model="ir.ui.view">
+<!--        <record id="inherit_maintenance_extend_kanban" model="ir.ui.view">
             <field name="name">inherit.res.maintenance.extend.kanban</field>
             <field name="model">maintenance.request</field>
             <field name="inherit_id" ref="maintenance.hr_equipment_request_view_kanban"/>

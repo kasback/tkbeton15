@@ -36,21 +36,24 @@ class MaintenanceLine(models.Model):
     state = fields.Selection([
         ('green', 'Éspacé'),
         ('yellow', 'S\'approche'),
-        ('red', 'Urgent'),
+        ('red', 'Aujourd\'hui'),
+        ('grey', 'Dépassé'),
     ], string='État', compute="compute_state")
 
     @api.depends('last_maintenance_date', 'next_maintenance_date')
     def compute_state(self):
         for rec in self:
-            diff = rec.last_maintenance_date - rec.next_maintenance_date
-            if diff:
-                diff_days = diff.days
-                if diff_days <= 0:
-                    rec.state = 'red'
-                elif 0 < diff_days <= 1:
-                    rec.state = 'yellow'
-                elif diff_days > 1:
-                    rec.state = 'green'
+            diff = rec.next_maintenance_date - fields.date.today()
+            print('diff', diff.days)
+            diff_days = diff.days
+            if diff_days < 0:
+                rec.state = 'grey'
+            if diff_days == 0:
+                rec.state = 'red'
+            elif 0 < diff_days <= 1:
+                rec.state = 'yellow'
+            elif diff_days > 1:
+                rec.state = 'green'
 
     @api.depends('last_maintenance_date', 'day_of_week', 'frequency')
     def _compute_next_maintenance(self):
@@ -83,10 +86,12 @@ class MaintenanceLine(models.Model):
             equipment_id = rec.equipment_id
             if not equipment_id.maintenance_team_id:
                 raise ValidationError('Veuillez renseigner l\'équipe de maintenance')
-            if equipment_id.maintenance_count > 0 and equipment_id.maintenance_ids.filtered(lambda m: m.request_date == rec.last_maintenance_date):
+            if equipment_id.maintenance_count > 0 and equipment_id.maintenance_ids.filtered(
+                    lambda m: m.request_date == rec.last_maintenance_date):
                 raise ValidationError('Une demande de maintenance pour ce matériel est déja créee')
             self.env['maintenance.request'].create({
-                'name': 'Maintenance - %s - %s - %s' % (equipment_id.name, rec.next_maintenance_date, rec.type_ids.name),
+                'name': 'Maintenance - %s - %s - %s' % (
+                    equipment_id.name, rec.next_maintenance_date, rec.type_ids.name),
                 'request_date': rec.next_maintenance_date,
                 'schedule_date': rec.next_maintenance_date,
                 'equipment_id': rec.equipment_id.id,
@@ -97,3 +102,23 @@ class MaintenanceLine(models.Model):
                 'company_id': equipment_id.company_id.id or self.env.company.id
             })
             rec.write({'last_maintenance_date': fields.Date.today()})
+
+    def open_create_audit_wizard(self):
+        wizard_maintenace_lines = []
+        for rec in self:
+            wizard_maintenace_lines.append((0, 0, {
+                'maintenance_line_id': rec.id,
+                'equipment_id': rec.equipment_id.id,
+                'type_ids': rec.type_ids.id,
+                'nature': rec.nature,
+                'frequency': rec.frequency,
+                'next_maintenance_date': rec.next_maintenance_date
+            }))
+        action = {
+            'type': 'ir.actions.act_window',
+            'res_model': 'create.audit.wizard',
+            'view_mode': 'form',
+            'context': {'default_maintenance_line_ids': wizard_maintenace_lines},
+            'target': 'new'
+        }
+        return action

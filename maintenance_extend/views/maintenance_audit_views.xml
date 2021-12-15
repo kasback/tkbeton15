@@ -1,20 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="act_audit_2_maintenance" model="ir.actions.act_window">
+        <field name="name">Maintenances</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="maintenance.hr_equipment_request_view_kanban"/>
+        <field name="context">{'default_audit_id': active_id}</field>
+        <field name="domain">[('audit_id', '=', active_id)]</field>
+    </record>
+
     <record id="maintenance_audit_form" model="ir.ui.view">
         <field name="name">maintenance.audit.form</field>
         <field name="model">maintenance.audit</field>
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="open_audit_lines" type="object" string="Lignes de l'audit" />
+                    <button name="open_audit_lines" type="object" string="Lignes de l'audit"/>
                     <button name="validate_audit" type="object" string="Valider" states="open"/>
-                    <field name="state" widget="statusbar" />
+                    <button name="to_draft" type="object" string="Remettre en brouillon" states="closed"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="action" name="%(maintenance_extend.act_audit_2_maintenance)d" icon="fa-calendar"
+                                attrs="{'invisible': [('state', '!=', 'closed')]}">
+                            <div class="o_stat_info">
+                                <field name="maintenance_count"/>
+                                <span class="o_stat_text">Maintenances</span>
+                            </div>
+                        </button>
+                    </div>
                     <group>
                         <field name="name"/>
                         <field name="date"/>
+                        <field name="responsible_id"/>
                     </group>
                 </sheet>
             </form>
@@ -28,6 +48,8 @@
             <tree>
                 <field name="name"/>
                 <field name="date"/>
+                <field name="responsible_id"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>
@@ -39,6 +61,7 @@
             <search>
                 <group expand="1" string="Group By">
                     <filter string="Date" name="groupby_date" context="{'group_by': 'date'}"/>
+                    <filter string="Responsable" name="groupby_responsible" context="{'group_by': 'responsible_id'}"/>
                 </group>
             </search>
         </field>
@@ -48,7 +71,7 @@
         <field name="name">Programation de la création des audits</field>
         <field name="model_id" ref="maintenance_extend.model_maintenance_audit"/>
         <field name="state">code</field>
-        <field name="code">model.generate_audit()</field>
+        <field name="code">model.generate_audit_lines()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
         <field name="numbercall">-1</field>

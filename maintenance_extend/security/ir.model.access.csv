@@ -7,5 +7,7 @@ access_maintenance_service_line,access_maintenance.line user,model_maintenance_s
 access_reinitialize_service_wizard,access_maintenance.line user,model_reinitialize_service_wizard,base.group_user,1,1,1,1
 access_reinitialize_service_wizard_line,access_maintenance.line user,model_reinitialize_service_wizard_line,base.group_user,1,1,1,1
 access_maintenance_service_configuration,access_maintenance.line user,model_maintenance_service_configuration,base.group_user,1,1,1,1
-access_maintenance_audit,access_maintenance.audit user,model_maintenance_audit,base.group_user,1,1,1,1
-access_maintenance_audi_linet,access_maintenance_audit_line user,model_maintenance_audit_line,base.group_user,1,1,1,1
+access_maintenance_audit,access_maintenance.audit user,model_maintenance_audit,base.group_user,1,1,1,0
+access_maintenance_audi_linet,access_maintenance_audit_line user,model_maintenance_audit_line,base.group_user,1,1,1,0
+access_create_audit_wizard,access_create_audit_wizard user,model_create_audit_wizard,base.group_user,1,1,1,1
+access_create_audit_wizard_line,access_create_audit_wizard_line user,model_create_audit_wizard_line,base.group_user,1,1,1,1

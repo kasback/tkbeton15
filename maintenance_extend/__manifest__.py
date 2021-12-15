@@ -5,7 +5,7 @@
     'description': """""",
     'author': 'Osisoftware',
     'website': 'http://www.osisoftware.com',
-    'depends': ['maintenance', 'mrp'],
+    'depends': ['maintenance', 'hr', 'mrp'],
     'data': [
         'data/data.xml',
         'security/ir.model.access.csv',
@@ -19,6 +19,7 @@
         'views/maintenance_audit_views.xml',
         'views/maintenance_audit_lines_views.xml',
         'wizard/reinitialize_service_wizard_views.xml',
+        'wizard/create_audit_wizard_views.xml',
     ],
 
 }
