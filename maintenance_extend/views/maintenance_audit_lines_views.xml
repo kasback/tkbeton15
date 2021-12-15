@@ -5,7 +5,7 @@
         <field name="name">maintenance.audit.line.tree</field>
         <field name="model">maintenance.audit.line</field>
         <field name="arch" type="xml">
-            <tree editable="bottom">
+            <tree editable="bottom" decoration-danger="not is_ok" create="0">
                 <field name="state" invisible="1"/>
                 <field name="equipment_id" readonly="1"/>
                 <field name="type_ids" readonly="1"/>

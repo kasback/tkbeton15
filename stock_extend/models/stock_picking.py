@@ -2,20 +2,6 @@
 import datetime
 
 from odoo import models, fields, api
-from odoo.osv import expression
-
-
-class ProductProduct(models.Model):
-    _inherit = 'product.product'
-
-    @api.model
-    def _name_search(self, name='', args=None, operator='ilike', limit=100, name_get_uid=None):
-        if args is None:
-            args = []
-        domain = ['|', ('name', operator, name),
-                  ('product_template_variant_value_ids', operator, name),
-                  ('default_code', operator, name)]
-        return self._search(expression.AND([domain, args]), limit=limit, access_rights_uid=name_get_uid)
 
 
 class PurchaseOrder(models.Model):
@@ -34,26 +20,29 @@ class StockPicking(models.Model):
     city = fields.Many2one('product.product', 'Ville')
     intercompany_transfer = fields.Boolean('Transfert Inter-Société', default=False)
     company_dest_id = fields.Many2one('res.company', 'Société destinataire')
+    percent = fields.Float('Pourcentage')
 
     def prepare_sale_order_lines(self, move_ids):
         for move in move_ids:
+            price_unit = move.purchase_line_id.price_unit
             return [(0, 0, {
                 'name': move.product_id.name,
                 'product_id': move.product_id.id,
                 'product_uom_qty': move.quantity_done,
                 'product_uom': move.product_id.uom_id.id,
-                'price_unit': move.purchase_line_id.price_unit,
+                'price_unit': price_unit + (price_unit * (self.percent / 100)),
             })]
 
     def prepare_purchase_order_lines(self, move_ids):
         for move in move_ids:
+            price_unit = move.purchase_line_id.price_unit
             return [
                 (0, 0, {
                     'name': move.product_id.name,
                     'product_id': move.product_id.id,
                     'product_qty': move.quantity_done,
                     'product_uom': move.product_id.uom_id.id,
-                    'price_unit': move.purchase_line_id.price_unit,
+                    'price_unit': price_unit + (price_unit * (self.percent / 100)),
                     'date_planned': self.real_date,
                     'taxes_id': move.purchase_line_id.taxes_id
                 })
@@ -71,7 +60,7 @@ class StockPicking(models.Model):
                 if not existing_po and not existing_so:
                     so_intercompany = SaleOrder.create({
                         'partner_id': self.company_dest_id.partner_id.id,
-                        'date_order': self.real_date,
+                        'date_order': self.real_date or fields.datetime.now(),
                         'origin': self.name + '/' + self.supplier_number,
                         'order_line': self.prepare_sale_order_lines(move)
                     })

@@ -2,6 +2,7 @@
 
 from odoo import models,fields, api
 from odoo.exceptions import ValidationError
+from odoo.osv import expression
 
 
 class ProductTemplate(models.Model):
@@ -23,6 +24,15 @@ class ProductProduct(models.Model):
 
     tag_ids = fields.Many2many('product.tags', string='Étiquettes')
     is_carburant = fields.Boolean('Est un carburant', default=False)
+
+    @api.model
+    def _name_search(self, name='', args=None, operator='ilike', limit=100, name_get_uid=None):
+        if args is None:
+            args = []
+        domain = ['|', '|', ('name', operator, name),
+                  ('product_template_variant_value_ids', operator, name),
+                  ('default_code', operator, name)]
+        return self._search(expression.AND([domain, args]), limit=limit, access_rights_uid=name_get_uid)
 
 
 class ProductTags(models.Model):

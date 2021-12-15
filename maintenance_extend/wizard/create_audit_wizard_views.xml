@@ -8,16 +8,16 @@
                 <form string="Créer un audit">
                     <sheet>
                         <group>
-                            <field name="responsible_id"/>
+                            <field name="responsible_id" options="{'no_create': True}"/>
                             <field name="date"/>
                         </group>
                         <group>
                             <field name="maintenance_line_ids">
                                 <tree>
                                     <field name="maintenance_line_id" invisible="1"/>
-                                    <field name="equipment_id"/>
-                                    <field name="product_id"/>
-                                    <field name="type_ids"/>
+                                    <field name="equipment_id" options="{'no_create': True}"/>
+                                    <field name="product_id" options="{'no_create': True}"/>
+                                    <field name="type_ids" options="{'no_create': True}"/>
                                     <field name="nature"/>
                                     <field name="frequency"/>
                                     <field name="next_maintenance_date"/>
