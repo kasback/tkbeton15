@@ -16,6 +16,7 @@ class MaintenanceRequest(models.Model):
     date_start_unavailability = fields.Datetime('Date début d\'indisponibilité')
     equipment_unavailability_time = fields.Float('Compteur d\'indisponibilité')
     equipment_unavailability_time_in_days = fields.Float('Compteur d\'indisponibilité en jours')
+    nature = fields.Char('Nature')
 
     def _get_mrp_count(self):
         for rec in self:

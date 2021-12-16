@@ -44,7 +44,8 @@ class MaintenanceAudit(models.Model):
                     'maintenance_team_id': self.env.ref('maintenance.equipment_team_maintenance').id,
                     'company_id': self.env.company.id,
                     'description': rec.observation,
-                    'employee_id': self.responsible_id.id
+                    'employee_id': self.responsible_id.id,
+                    'nature': rec.nature
                 })
                 generated_maintenances.append((4, maintenance_id.id))
             rec.maintenance_line_id.write({
