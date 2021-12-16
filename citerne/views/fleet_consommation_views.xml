@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fleet_vehicle_cons_form" model="ir.ui.view">
+        <field name="name">equipment.consomation.form</field>
+        <field name="model">equipment.consomation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_to_done" states="draft" string="Valider" type="object"
+                            class="oe_highlight"/>
+                    <button name="action_to_draft" states="done" string="Annuler" type="object"
+                            class="oe_highlight"/>
+                    <field name="state" widget="statusbar" readonly="1"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="equipment_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="conducteur" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <group attrs="{'readonly': [('state', '!=', 'draft')]}">
+                            <field name="qty_litres"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="kilometrage"/>
+                            <field name="picking_id" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_cons_tree" model="ir.ui.view">
+        <field name="name">equipment.consomation.tree</field>
+        <field name="model">equipment.consomation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="equipment_id"/>
+                <field name="conducteur"/>
+                <field name="date"/>
+                <field name="qty_litres"/>
+                <field name="kilometrage"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="fleet_vehicle_cons_search" model="ir.ui.view">
+        <field name="name">equipment.consomation.search</field>
+        <field name="model">equipment.consomation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="date"/>
+                <field string="Équipement" name="equipment_id"
+                       filter_domain="['|', ('equipment_id', 'ilike', self)]"/>
+                <field name="conducteur"/>
+                <group expand="1" string="Group By">
+                    <filter string="Date" name="groupby_date" context="{'group_by': 'date'}"/>
+                    <filter string="Equipement" name="groupby_equipment" context="{'group_by': 'equipment_id'}"/>
+                    <filter string="Conducteur" name="groupby_driver" context="{'group_by': 'conducteur'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="open_view_equipment_consomation" model="ir.actions.act_window">
+        <field name="name">Consomation de carburant</field>
+        <field name="res_model">equipment.consomation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Consomation de carburant"
+              id="fleet_consomation_menu_item"
+              action="open_view_equipment_consomation"
+              parent="maintenance.menu_equipment_form"
+    />
+</odoo>

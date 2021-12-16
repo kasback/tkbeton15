@@ -43,6 +43,7 @@
                     <field name="audit_id"/>
                     <field name="description"/>
                     <field name="nature"/>
+                    <field name="equipment_unavailability_time_in_days"/>
                 </field>
             </field>
         </record>
@@ -53,6 +54,7 @@
             <field name="inherit_id" ref="maintenance.hr_equipment_request_view_search"/>
             <field name="arch" type="xml">
                 <xpath expr="//group" position="inside">
+                    <filter string="Équipement" name="equipment_id" domain="[]" context="{'group_by': 'equipment_id'}"/>
                     <filter string="Audit" name="audit_id" domain="[]" context="{'group_by': 'audit_id'}"/>
                 </xpath>
             </field>

@@ -41,18 +41,6 @@ class PurchaseRequest(models.Model):
         if group_daf.users:
             return group_daf.users[0]
 
-    def _get_resp_achat(self):
-        res = False
-        if self.purchase_type == 'local':
-            group_resp_achat_local = self.env.ref('supplier_evaluation.group_al')
-            if group_resp_achat_local.users:
-                res = group_resp_achat_local.users[0]
-        else:
-            group_resp_achat_import = self.env.ref('supplier_evaluation.group_ai')
-            if group_resp_achat_import.users:
-                res = group_resp_achat_import.users[0]
-        return res
-
     @api.model
     def get_purchase_product_type_selection(self):
         if self.env.user.has_group('purchase_request.group_purchase_request_manager'):

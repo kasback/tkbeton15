@@ -23,7 +23,6 @@ class ProductProduct(models.Model):
     _inherit = 'product.product'
 
     tag_ids = fields.Many2many('product.tags', string='Étiquettes')
-    is_carburant = fields.Boolean('Est un carburant', default=False)
 
     @api.model
     def _name_search(self, name='', args=None, operator='ilike', limit=100, name_get_uid=None):

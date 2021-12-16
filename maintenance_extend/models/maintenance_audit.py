@@ -23,7 +23,7 @@ class MaintenanceAudit(models.Model):
             rec.maintenance_count = len(rec.maintenance_ids)
 
     def open_audit_lines(self):
-        action = self.env.ref('maintenance_extend.open_view_equipment_maintenance_line').read()[0]
+        action = self.sudo().env.ref('maintenance_extend.open_view_equipment_maintenance_line').read()[0]
         action['domain'] = [('audit_id', '=', self.id)]
         action['context'] = {'default_audit_id': self.id}
         return action

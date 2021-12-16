@@ -1,7 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_maintenance_equipment_type_read,maintenance_equipment_type_read,model_maintenance_equipment_type,base.group_user,1,1,1,1
 access_maintenance_equipment_odometer_read,maintenance_equipment_odometer_read,model_maintenance_equipment_odometer,base.group_user,1,1,1,1
-access_maintenance_consomation,access_maintenance.consomation user,model_maintenance_consomation,base.group_user,1,1,1,1
 access_maintenance_line,access_maintenance.line user,model_maintenance_line,base.group_user,1,1,1,1
 access_maintenance_service_line,access_maintenance.line user,model_maintenance_service_line,base.group_user,1,1,1,1
 access_reinitialize_service_wizard,access_maintenance.line user,model_reinitialize_service_wizard,base.group_user,1,1,1,1
