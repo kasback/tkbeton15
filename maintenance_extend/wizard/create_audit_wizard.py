@@ -13,7 +13,6 @@ class CreateAuditWizard(models.TransientModel):
     def action_create_audit(self):
         audit_lines = []
         for rec in self.maintenance_line_ids:
-            print('wizard maintenance_line_id', rec.maintenance_line_id.id)
             audit_lines.append((0, 0, {
                 'maintenance_line_id': rec.maintenance_line_id.id,
                 'equipment_id': rec.equipment_id.id,

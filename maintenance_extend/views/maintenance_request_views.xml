@@ -25,8 +25,8 @@
                     </div>
                 </xpath>
                 <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="audit_id" readonly="1" />
-                    <field name="date_start_unavailability" readonly="1" />
+                    <field name="audit_id" readonly="1"/>
+                    <field name="date_start_unavailability" readonly="1"/>
                     <field name="equipment_unavailability_time" invisible="0" widget="float_time"/>
                     <field name="equipment_unavailability_time_in_days" invisible="0"/>
                 </xpath>
@@ -40,21 +40,35 @@
             <field name="inherit_id" ref="maintenance.hr_equipment_request_view_tree"/>
             <field name="arch" type="xml">
                 <field name="stage_id" position="after">
-                    <field name="audit_id" />
-                    <field name="description" />
+                    <field name="audit_id"/>
+                    <field name="description"/>
+                    <field name="nature"/>
+                    <field name="equipment_unavailability_time_in_days"/>
                 </field>
             </field>
         </record>
-<!--        <record id="inherit_maintenance_extend_kanban" model="ir.ui.view">
-            <field name="name">inherit.res.maintenance.extend.kanban</field>
+
+        <record id="inherit_maintenance_extend_search" model="ir.ui.view">
+            <field name="name">inherit.res.maintenance.extend.search</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance.hr_equipment_request_view_kanban"/>
+            <field name="inherit_id" ref="maintenance.hr_equipment_request_view_search"/>
             <field name="arch" type="xml">
-                <field name="lang" position="before">
-                    <field name="fax" widget="phone"/>
-                </field>
+                <xpath expr="//group" position="inside">
+                    <filter string="Équipement" name="equipment_id" domain="[]" context="{'group_by': 'equipment_id'}"/>
+                    <filter string="Audit" name="audit_id" domain="[]" context="{'group_by': 'audit_id'}"/>
+                </xpath>
             </field>
         </record>
--->
+        <!--        <record id="inherit_maintenance_extend_kanban" model="ir.ui.view">
+                    <field name="name">inherit.res.maintenance.extend.kanban</field>
+                    <field name="model">maintenance.request</field>
+                    <field name="inherit_id" ref="maintenance.hr_equipment_request_view_kanban"/>
+                    <field name="arch" type="xml">
+                        <field name="lang" position="before">
+                            <field name="fax" widget="phone"/>
+                        </field>
+                    </field>
+                </record>
+        -->
     </data>
 </odoo>

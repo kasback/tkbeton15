@@ -114,12 +114,4 @@ class StockPicking(models.Model):
                         ]
                     })
                     po.button_confirm()
-        for ml in self.move_ids_without_package:
-            if ml.product_id.is_carburant and ml.purchase_line_id:
-                self.env['fleet.recharge'].create({
-                    'volume': ml.purchase_line_id.product_qty,
-                    'price_unit': ml.purchase_line_id.price_unit,
-                    'date': ml.picking_id.real_date,
-                    'name': 'Alimentation citerne provenant de l\'achat %s' % ml.purchase_line_id.order_id.name
-                })
         return super(StockPicking, self).button_validate()

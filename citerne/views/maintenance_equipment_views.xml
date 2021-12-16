@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="act_fleet_2_consommation" model="ir.actions.act_window">
+        <field name="name">Consommations</field>
+        <field name="res_model">equipment.consomation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('equipment_id', '=', active_id)]</field>
+        <field name="context">{'default_equipment_id': active_id}</field>
+    </record>
+
+    <record id="inherit_maintenance_equipment_extend_conso_form" model="ir.ui.view">
+            <field name="name">inherit.res.maintenance.equipment.extend.conso.form</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+            <field name="arch" type="xml">
+                <div name="button_box" position="inside">
+                <button class="oe_stat_button" type="action"
+                        name="%(citerne.act_fleet_2_consommation)d"
+                        icon="fa-sitemap">
+                    <field string="Consommations" name="count_vehicle_cons" widget="statinfo"/>
+                </button>
+            </div>
+            </field>
+    </record>
+</odoo>

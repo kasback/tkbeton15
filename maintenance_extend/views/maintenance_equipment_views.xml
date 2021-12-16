@@ -47,7 +47,7 @@
                     <field name="is_vehicle" invisible="0"/>
                     <field name="equipment_unavailability_time" invisible="0" widget="float_time"/>
                     <field name="equipment_unavailability_time_in_days" invisible="0"/>
-                    <field name="group_id"/>
+                    <field name="group_id" options="{'no_create': True}"/>
                     <label for="odometer" attrs="{'invisible' : [('is_vehicle', '=', False)]}"/>
                     <div class="o_row" attrs="{'invisible' : [('is_vehicle', '=', False)]}">
                         <field name="odometer"/>

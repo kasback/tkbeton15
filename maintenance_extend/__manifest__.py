@@ -12,7 +12,6 @@
         'views/maintenance_request_views.xml',
         'views/maintenance_equipement_type_views.xml',
         'views/maintenance_equipment_views.xml',
-        'views/maintenance_consommation_views.xml',
         'views/maintenance_configuration_views.xml',
         'views/maintenance_service_views.xml',
         'views/maintenance_line_views.xml',
