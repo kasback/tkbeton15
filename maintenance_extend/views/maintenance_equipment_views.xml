@@ -17,6 +17,40 @@
             </field>
         </record>
 
+        <record id="maintenance_equipment_kanban_inherit_availability" model="ir.ui.view">
+            <field name="name">maintenance.equipment.availability.kanban</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_kanban" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='oe_kanban_bottom_right']" position="inside">
+                    <field name="kanban_state" widget="kanban_state_selection"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="maintenance_equipment_tree_inherit_availability" model="ir.ui.view">
+            <field name="name">maintenance.equipment.availability.tree</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="kanban_state" widget="kanban_state_selection"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="maintenance_equipment_search_inherit_availability" model="ir.ui.view">
+            <field name="name">maintenance.equipment.availability.search</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_search" />
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='available']" position="after">
+                    <filter string="Disponibles" name="not_blocked" domain="[('kanban_state', '=', 'done')]"/>
+                    <filter string="Indisponibles" name="blocked" domain="[('kanban_state', '=', 'blocked')]"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="act_maintenance_2_odometre" model="ir.actions.act_window">
             <field name="name">Kilomètrage</field>
             <field name="res_model">maintenance.equipment.odometer</field>
@@ -42,6 +76,11 @@
                     <header>
                         <button name="open_reinitialize_wizard" type="object" string="Réinitialiser les compteurs"/>
                     </header>
+                </xpath>
+                <xpath expr="//form/sheet/div[1]" position="after">
+                    <div class="oe_right">
+                        <field name="kanban_state" class="oe_inline" widget="state_selection"/>
+                    </div>
                 </xpath>
                 <xpath expr="//form/sheet/group/group[1]" position="inside">
                     <field name="is_vehicle" invisible="0"/>

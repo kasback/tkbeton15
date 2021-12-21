@@ -29,7 +29,7 @@
         <field name="name">maintenance.line.tree</field>
         <field name="model">maintenance.line</field>
         <field name="arch" type="xml">
-            <tree multi-edit="1">
+            <tree multi_edit="1">
                 <field name="equipment_id"/>
                 <field name="type_ids"/>
                 <field name="nature"/>

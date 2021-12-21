@@ -60,6 +60,15 @@ class MaintenanceEquipment(models.Model):
     group_id = fields.Many2one('maintenance.equipment', 'Autocompletion des lignes de services')
     equipment_unavailability_time = fields.Float('Compteur d\'indisponibilité', compute='compute_equipment_unavailability_time')
     equipment_unavailability_time_in_days = fields.Float('Compteur d\'indisponibilité en jours', compute='compute_equipment_unavailability_time')
+    kanban_state = fields.Selection([('blocked', 'Indisponible'), ('done', 'Disponible')],
+                                    string='Disponibilité', required=True, store=True, default='done', compute='compute_kanban_state')
+
+    @api.depends('maintenance_ids.stage_id')
+    def compute_kanban_state(self):
+        for rec in self:
+            ongoing_maintenance = rec.maintenance_ids.filtered(lambda m: m.stage_id == self.env.ref('maintenance.stage_1'))
+            print('ongoing_maintenance', ongoing_maintenance)
+            rec.kanban_state = 'blocked' if ongoing_maintenance else 'done'
 
     def compute_equipment_unavailability_time(self):
         for rec in self:
