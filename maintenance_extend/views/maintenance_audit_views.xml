@@ -49,6 +49,7 @@
                 <field name="name"/>
                 <field name="date"/>
                 <field name="responsible_id"/>
+                <field name="maintenance_count"/>
                 <field name="state"/>
             </tree>
         </field>
@@ -62,6 +63,7 @@
                 <group expand="1" string="Group By">
                     <filter string="Date" name="groupby_date" context="{'group_by': 'date'}"/>
                     <filter string="Responsable" name="groupby_responsible" context="{'group_by': 'responsible_id'}"/>
+                    <filter string="État" name="groupby_state" context="{'group_by': 'state'}"/>
                 </group>
             </search>
         </field>
