@@ -43,7 +43,7 @@ class StockPicking(models.Model):
                     'product_qty': move.quantity_done,
                     'product_uom': move.product_id.uom_id.id,
                     'price_unit': price_unit + (price_unit * (self.percent / 100)),
-                    'date_planned': self.real_date,
+                    'date_planned': self.real_date or fields.Date.today(),
                     'taxes_id': move.purchase_line_id.taxes_id
                 })
             ]
@@ -66,9 +66,11 @@ class StockPicking(models.Model):
                     })
                     so_intercompany.action_confirm()
                     for picking in so_intercompany.picking_ids:
+                        picking.supplier_number = self.supplier_number
                         picking.action_set_quantities_to_reservation()
+                        for ml in picking.move_ids_without_package:
+                            ml.quantity_done = ml.product_uom_qty
                         picking.button_validate()
-
                     picking_type_id = self.env['stock.picking.type'].search([('code', '=', 'incoming'),
                                                                              ('sequence_code', '=', 'IN'),
                                                                              ('company_id', '=',
@@ -89,6 +91,7 @@ class StockPicking(models.Model):
                     })
                     po_intercompany.button_confirm()
                     for picking in po_intercompany.picking_ids:
+                        picking.supplier_number = self.supplier_number
                         picking.action_set_quantities_to_reservation()
                         picking.button_validate()
         if self.depart_usine:

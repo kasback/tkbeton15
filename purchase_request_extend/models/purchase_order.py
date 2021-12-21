@@ -42,13 +42,9 @@ class PurchaseOrderLine(models.Model):
 
         if seller or not self.date_planned:
             self.date_planned = self._get_date_planned(seller).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-        print('self.product_id', self.product_id)
-        print('self.product_id', self.env['product.product'].search([('name', 'ilike', 'Transport')]))
-        print('is transport', self.product_id == self.env['product.product'].search([('name', 'ilike', 'Transport')]))
 
         # If not seller, use the standard price. It needs a proper currency conversion.
         if not seller or (seller and 'Transport' in self.product_id.name):
-            print('inside if')
             po_line_uom = self.product_uom or self.product_id.uom_po_id
             price_unit = self.env['account.tax']._fix_tax_included_price_company(
                 self.product_id.uom_id._compute_price(self.product_id.standard_price, po_line_uom),
