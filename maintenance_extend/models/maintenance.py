@@ -77,7 +77,8 @@ class MaintenanceEquipment(models.Model):
 
     @api.onchange('group_id')
     def _on_change_group_id(self):
-        res = []
+        res_service = []
+        res_maintenance = []
         for service_line in self.group_id.maintenance_service_ids:
             line_vals = {
                 'type_id': service_line.type_id.id,
@@ -88,8 +89,19 @@ class MaintenanceEquipment(models.Model):
                 'odometer_unit': service_line.odometer_unit,
                 'equipment_id': self.id
             }
-            res.append((0, 0, line_vals))
-        self.maintenance_service_ids = res
+            res_service.append((0, 0, line_vals))
+        for maintenance_line in self.group_id.maintenance_line_ids:
+            line_vals = {
+                'type_ids': maintenance_line.type_ids.id,
+                'nature': maintenance_line.nature,
+                'frequency': maintenance_line.frequency,
+                'day_of_week': maintenance_line.day_of_week,
+                'last_maintenance_date': maintenance_line.last_maintenance_date,
+                'equipment_id': self.id
+            }
+            res_maintenance.append((0, 0, line_vals))
+        self.maintenance_service_ids = res_service
+        self.maintenance_line_ids = res_maintenance
 
     def _set_odometer(self):
         for record in self:
