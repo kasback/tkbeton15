@@ -12,10 +12,26 @@ class MaintenanceRequest(models.Model):
 
     mrp_ids = fields.One2many('mrp.production', 'maintenance_request_id', 'Réparations')
     count_reparations = fields.Integer('Comptage de réparations', compute='_get_mrp_count')
+    audit_id = fields.Many2one('maintenance.audit', string="Audit de maintenance")
+    date_start_unavailability = fields.Datetime('Date début d\'indisponibilité')
+    equipment_unavailability_time = fields.Float('Compteur d\'indisponibilité')
+    equipment_unavailability_time_in_days = fields.Float('Compteur d\'indisponibilité en jours')
+    nature = fields.Char('Nature')
 
     def _get_mrp_count(self):
         for rec in self:
             rec.count_reparations = len(rec.mrp_ids)
+
+    def write(self, vals):
+        if 'stage_id' in vals:
+            en_cours_stage_id = self.env.ref('maintenance.stage_1')
+            if vals['stage_id'] == en_cours_stage_id.id:
+                vals['date_start_unavailability'] = fields.Datetime.now()
+            if self.stage_id == en_cours_stage_id and vals['stage_id'] != en_cours_stage_id.id:
+                if self.date_start_unavailability:
+                    self.equipment_unavailability_time += (fields.Datetime.now() - self.date_start_unavailability).seconds / 3600
+                    self.equipment_unavailability_time_in_days += (fields.Datetime.now() - self.date_start_unavailability).days
+        return super(MaintenanceRequest, self).write(vals)
 
 
 class MRP(models.Model):
@@ -38,16 +54,26 @@ class MaintenanceEquipment(models.Model):
         ], 'Unité', default='kilometers', help='Unit of the odometer ', required=True)
     odometer = fields.Float(compute='_get_odometer', inverse='_set_odometer', string='Last Odometer',
         help='Odometer measure of the vehicle at the moment of this log')
-    consomation_ids = fields.One2many('maintenance.consomation', 'equipment_id', string="Consommations", readonly=True)
-    count_vehicle_cons = fields.Integer(compute='_cons_count', string=u'Nbre de consommations')
     license_plate = fields.Char(string='Immatriculation')
     maintenance_line_ids = fields.One2many('maintenance.line', 'equipment_id', 'Lignes de maintenance')
     maintenance_service_ids = fields.One2many('maintenance.service.line', 'equipment_id', 'Lignes des services')
     group_id = fields.Many2one('maintenance.equipment', 'Autocompletion des lignes de services')
+    equipment_unavailability_time = fields.Float('Compteur d\'indisponibilité', compute='compute_equipment_unavailability_time')
+    equipment_unavailability_time_in_days = fields.Float('Compteur d\'indisponibilité en jours', compute='compute_equipment_unavailability_time')
+    kanban_state = fields.Selection([('blocked', 'Indisponible'), ('done', 'Disponible')],
+                                    string='Disponibilité', required=True, store=True, default='done', compute='compute_kanban_state')
 
-    def _cons_count(self):
+    @api.depends('maintenance_ids.stage_id')
+    def compute_kanban_state(self):
         for rec in self:
-            rec.count_vehicle_cons = len(rec.consomation_ids)
+            ongoing_maintenance = rec.maintenance_ids.filtered(lambda m: m.stage_id == self.env.ref('maintenance.stage_1'))
+            print('ongoing_maintenance', ongoing_maintenance)
+            rec.kanban_state = 'blocked' if ongoing_maintenance else 'done'
+
+    def compute_equipment_unavailability_time(self):
+        for rec in self:
+            rec.equipment_unavailability_time = sum(rec.maintenance_ids.mapped('equipment_unavailability_time'))
+            rec.equipment_unavailability_time_in_days = sum(rec.maintenance_ids.mapped('equipment_unavailability_time_in_days'))
 
     def _get_odometer(self):
         FleetVehicalOdometer = self.env['maintenance.equipment.odometer']
@@ -60,7 +86,8 @@ class MaintenanceEquipment(models.Model):
 
     @api.onchange('group_id')
     def _on_change_group_id(self):
-        res = []
+        res_service = []
+        res_maintenance = []
         for service_line in self.group_id.maintenance_service_ids:
             line_vals = {
                 'type_id': service_line.type_id.id,
@@ -71,8 +98,19 @@ class MaintenanceEquipment(models.Model):
                 'odometer_unit': service_line.odometer_unit,
                 'equipment_id': self.id
             }
-            res.append((0, 0, line_vals))
-        self.maintenance_service_ids = res
+            res_service.append((0, 0, line_vals))
+        for maintenance_line in self.group_id.maintenance_line_ids:
+            line_vals = {
+                'type_ids': maintenance_line.type_ids.id,
+                'nature': maintenance_line.nature,
+                'frequency': maintenance_line.frequency,
+                'day_of_week': maintenance_line.day_of_week,
+                'last_maintenance_date': maintenance_line.last_maintenance_date,
+                'equipment_id': self.id
+            }
+            res_maintenance.append((0, 0, line_vals))
+        self.maintenance_service_ids = res_service
+        self.maintenance_line_ids = res_maintenance
 
     def _set_odometer(self):
         for record in self:
@@ -121,37 +159,3 @@ class FleetEquipmentOdometer(models.Model):
     unit = fields.Selection(related='equipment_id.odometer_unit', string="Unité", readonly=True)
     driver_id = fields.Many2one(related="equipment_id.employee_id", string="Conducteur", readonly=False)
 
-
-class MaintenanceConsomation(models.Model):
-    _name = 'maintenance.consomation'
-
-    equipment_id = fields.Many2one('maintenance.equipment', string='Véhicule', required=True)
-    date = fields.Date('Date', default=fields.Date.today())
-    immatriculation = fields.Char(related='equipment_id.license_plate', string='Immatriculation')
-    motif = fields.Char(string='Motif')
-    name = fields.Char(string='Numéro de reçu')
-    conducteur = fields.Many2one(related='equipment_id.employee_id', string='Employé', readonly=False)
-    qty_litres = fields.Float(string="Quantité en litres", required=True)
-    amount = fields.Float(string="Prix en DH", compute='compute_amounts')
-    total = fields.Float(string="Total en DH", compute='compute_amounts')
-    kilometrage = fields.Float(string="Odomètre", required=True)
-
-    @api.model
-    def create(self, vals):
-        self.env['maintenance.equipment.odometer'].create({
-            'date': vals['date'],
-            'equipment_id': vals['equipment_id'],
-            'driver_id': vals['conducteur'],
-            'value': vals['kilometrage'],
-        })
-        return super(MaintenanceConsomation, self).create(vals)
-
-    @api.depends('qty_litres', 'date')
-    def compute_amounts(self):
-        for rec in self:
-            rec.amount = 0.0
-            rec.total = 0.0
-            last_recharge_id = self.env['fleet.recharge'].search([('date', '<=', rec.date)], order='date DESC')
-            if last_recharge_id:
-                rec.amount = last_recharge_id[0].price_unit
-                rec.total = rec.amount * rec.qty_litres

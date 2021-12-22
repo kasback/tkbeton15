@@ -1,33 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="maintenance_audit_line_form" model="ir.ui.view">
-        <field name="name">maintenance.audit.line.form</field>
-        <field name="model">maintenance.audit.line</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <group>
-                        <field name="equipment_id"/>
-                        <field name="type_ids"/>
-                        <field name="nature"/>
-                        <field name="next_maintenance_date"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
     <record id="maintenance_audit_line_tree" model="ir.ui.view">
         <field name="name">maintenance.audit.line.tree</field>
         <field name="model">maintenance.audit.line</field>
         <field name="arch" type="xml">
-            <tree editable="bottom">
-                <field name="equipment_id"/>
-                <field name="type_ids"/>
-                <field name="nature"/>
-                <field name="next_maintenance_date"/>
-                <field name="is_ok"/>
+            <tree editable="bottom" decoration-danger="not is_ok" create="0">
+                <field name="state" invisible="1"/>
+                <field name="equipment_id" readonly="1"/>
+                <field name="type_ids" readonly="1"/>
+                <field name="nature" readonly="1"/>
+                <field name="next_maintenance_date" readonly="1"/>
+                <field name="is_ok" attrs="{'readonly': [('state', '=', 'closed')]}"/>
+                <field name="observation"/>
             </tree>
         </field>
     </record>
@@ -57,7 +42,7 @@
     <record id="open_view_equipment_maintenance_line" model="ir.actions.act_window">
         <field name="name">Lignes audit de maintenance</field>
         <field name="res_model">maintenance.audit.line</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree</field>
     </record>
 
 </odoo>
