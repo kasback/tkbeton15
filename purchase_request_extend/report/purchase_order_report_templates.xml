@@ -3,24 +3,27 @@
     <template id="report_purchaseorder_document_wo_layout">
         <t t-call="web.basic_layout">
             <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/>
-            <t t-set="address">
-                <div t-field="o.partner_id"
-                     t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
-                <p t-if="o.partner_id.vat"><t t-esc="o.company_id.account_fiscal_country_id.vat_label or 'Tax ID'"/>:
-                    <span t-field="o.partner_id.vat"/>
-                </p>
-            </t>
-            <t t-if="o.dest_address_id">
-                <t t-set="information_block">
-                    <strong>Addresse de livraison:</strong>
-                    <div t-if="o.dest_address_id">
-                        <div t-field="o.dest_address_id"
-                             t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'
-                             name="purchase_shipping_address"/>
-                    </div>
-
-                </t>
-            </t>
+            <div class="row">
+                <div class="col-4">
+                    <t t-if="o.dest_address_id">
+                        <strong>Addresse de livraison:</strong>
+                        <div t-if="o.dest_address_id">
+                            <div t-field="o.dest_address_id"
+                                 t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'
+                                 name="purchase_shipping_address"/>
+                        </div>
+                    </t>
+                </div>
+                <div class="col-4"></div>
+                <div class="col-4">
+                    <div t-field="o.partner_id"
+                         t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                    <p t-if="o.partner_id.vat"><t t-esc="o.company_id.account_fiscal_country_id.vat_label or 'Tax ID'"/>
+                        :
+                        <span t-field="o.partner_id.vat"/>
+                    </p>
+                </div>
+            </div>
             <div class="page">
                 <div class="oe_structure"/>
 
