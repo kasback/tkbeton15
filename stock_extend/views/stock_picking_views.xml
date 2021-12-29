@@ -10,17 +10,17 @@
                     <attribute name="string">Date d'execution</attribute>
                 </field>
                 <field name="location_id" position="after">
-                    <field name="transporteur_id" domain="[('is_transporteur', '=', True)]"/>
+                    <field name="transporteur_id" domain="[('is_transporteur', '=', True)]" attrs="{'invisible': [('picking_type_code', '=', 'internal')]}"/>
                     <field name="depart_usine" attrs="{'invisible': [('transporteur_id', '=', False)]}"/>
                     <field name="city" attrs="{'invisible': [('transporteur_id', '=', False)], 'required': [('depart_usine', '=', True)]}" domain="[('name', 'ilike', 'Transport')]"/>
                     <field name="real_date"/>
-                    <field name="intercompany_transfer"/>
+                    <field name="intercompany_transfer" attrs="{'invisible': [('picking_type_code', '=', 'internal')]}"/>
                     <field name="company_dest_id" attrs="{'invisible': [('intercompany_transfer', '=', False)], 'required': [('intercompany_transfer', '=', True)]}"/>
                     <field name="percent" attrs="{'invisible': [('intercompany_transfer', '=', False)], 'required': [('intercompany_transfer', '=', True)]}"/>
                 </field>
                 <xpath expr="//div[@class='oe_title']" position="inside">
                     <h2>
-                        <field name="supplier_number" placeholder="Numéro de BL fournisseur"/>
+                        <field name="supplier_number" placeholder="Numéro de BL fournisseur" attrs="{'required': [('picking_type_code', '!=', 'internal')], 'invisible': [('picking_type_code', '=', 'internal')]}"/>
                     </h2>
                 </xpath>
             </field>

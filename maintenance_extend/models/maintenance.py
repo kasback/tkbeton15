@@ -13,25 +13,32 @@ class MaintenanceRequest(models.Model):
     mrp_ids = fields.One2many('mrp.production', 'maintenance_request_id', 'Réparations')
     count_reparations = fields.Integer('Comptage de réparations', compute='_get_mrp_count')
     audit_id = fields.Many2one('maintenance.audit', string="Audit de maintenance")
-    date_start_unavailability = fields.Datetime('Date début d\'indisponibilité')
-    equipment_unavailability_time = fields.Float('Compteur d\'indisponibilité')
-    equipment_unavailability_time_in_days = fields.Float('Compteur d\'indisponibilité en jours')
+    date_start = fields.Datetime('Date début de maintenance')
+    date_end = fields.Datetime('Date fin de maintenance')
+    equipment_unavailability_time = fields.Float('Compteur d\'indisponibilité', compute='compute_equipment_unavailability_time')
     nature = fields.Char('Nature')
+
+    @api.depends('date_start', 'date_end')
+    def compute_equipment_unavailability_time(self):
+        for rec in self:
+            rec.equipment_unavailability_time = 0
+            if rec.date_end and rec.date_start:
+                rec.equipment_unavailability_time = (rec.date_end - rec.date_start).days
 
     def _get_mrp_count(self):
         for rec in self:
             rec.count_reparations = len(rec.mrp_ids)
 
-    def write(self, vals):
-        if 'stage_id' in vals:
-            en_cours_stage_id = self.env.ref('maintenance.stage_1')
-            if vals['stage_id'] == en_cours_stage_id.id:
-                vals['date_start_unavailability'] = fields.Datetime.now()
-            if self.stage_id == en_cours_stage_id and vals['stage_id'] != en_cours_stage_id.id:
-                if self.date_start_unavailability:
-                    self.equipment_unavailability_time += (fields.Datetime.now() - self.date_start_unavailability).seconds / 3600
-                    self.equipment_unavailability_time_in_days += (fields.Datetime.now() - self.date_start_unavailability).days
-        return super(MaintenanceRequest, self).write(vals)
+    # def write(self, vals):
+    #     if 'stage_id' in vals:
+    #         en_cours_stage_id = self.env.ref('maintenance.stage_1')
+    #         if vals['stage_id'] == en_cours_stage_id.id:
+    #             vals['date_start_unavailability'] = fields.Datetime.now()
+    #         if self.stage_id == en_cours_stage_id and vals['stage_id'] != en_cours_stage_id.id:
+    #             if self.date_start_unavailability:
+    #                 self.equipment_unavailability_time += (fields.Datetime.now() - self.date_start_unavailability).seconds / 3600
+    #                 self.equipment_unavailability_time_in_days += (fields.Datetime.now() - self.date_start_unavailability).days
+    #     return super(MaintenanceRequest, self).write(vals)
 
 
 class MRP(models.Model):
@@ -59,7 +66,6 @@ class MaintenanceEquipment(models.Model):
     maintenance_service_ids = fields.One2many('maintenance.service.line', 'equipment_id', 'Lignes des services')
     group_id = fields.Many2one('maintenance.equipment', 'Autocompletion des lignes de services')
     equipment_unavailability_time = fields.Float('Compteur d\'indisponibilité', compute='compute_equipment_unavailability_time')
-    equipment_unavailability_time_in_days = fields.Float('Compteur d\'indisponibilité en jours', compute='compute_equipment_unavailability_time')
     kanban_state = fields.Selection([('blocked', 'Indisponible'), ('done', 'Disponible')],
                                     string='Disponibilité', required=True, store=True, default='done', compute='compute_kanban_state')
 
@@ -67,13 +73,11 @@ class MaintenanceEquipment(models.Model):
     def compute_kanban_state(self):
         for rec in self:
             ongoing_maintenance = rec.maintenance_ids.filtered(lambda m: m.stage_id == self.env.ref('maintenance.stage_1'))
-            print('ongoing_maintenance', ongoing_maintenance)
             rec.kanban_state = 'blocked' if ongoing_maintenance else 'done'
 
     def compute_equipment_unavailability_time(self):
         for rec in self:
             rec.equipment_unavailability_time = sum(rec.maintenance_ids.mapped('equipment_unavailability_time'))
-            rec.equipment_unavailability_time_in_days = sum(rec.maintenance_ids.mapped('equipment_unavailability_time_in_days'))
 
     def _get_odometer(self):
         FleetVehicalOdometer = self.env['maintenance.equipment.odometer']
