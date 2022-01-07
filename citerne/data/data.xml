@@ -13,6 +13,7 @@
             <field name="prefix">RC</field>
             <field name="padding">5</field>
         </record>
+<!--
 
         <record id="product_product_fuel" model="product.product">
             <field name="name">Carburant</field>
@@ -26,6 +27,7 @@
             <field name="taxes_id" eval="[(6, 0, [ref('l10n_maroc.1_109')])]"/>
             <field name="supplier_taxes_id" eval="[(6, 0, [ref('l10n_maroc.1_150')])]"/>
         </record>
+-->
 
         <record id="stock_picking_type_citerne" model="stock.picking.type">
             <field name="name">Opérations: Citerne</field>
@@ -34,6 +36,7 @@
             <field name="default_location_src_id" ref="stock.stock_location_stock"/>
             <field name="default_location_dest_id" ref="citerne.stock_location_citerne"/>
             <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="active" eval="False"/>
         </record>
 
 

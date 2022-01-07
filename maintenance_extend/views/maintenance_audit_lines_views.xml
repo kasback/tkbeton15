@@ -11,7 +11,7 @@
                 <field name="type_ids" readonly="1"/>
                 <field name="nature" readonly="1"/>
                 <field name="next_maintenance_date" readonly="1"/>
-                <field name="is_ok" attrs="{'readonly': [('state', '=', 'closed')]}"/>
+                <field name="is_ok" attrs="{'readonly': [('state', '=', 'closed')]}" widget="boolean_toggle"/>
                 <field name="observation"/>
             </tree>
         </field>

@@ -76,7 +76,7 @@ class MaintenanceAuditLine(models.Model):
     type_ids = fields.Many2one('maintenance.equipment.type', string='Type de maintenance')
     nature = fields.Char(string='Nature')
     next_maintenance_date = fields.Date(string='Date de maintenance')
-    is_ok = fields.Boolean(string='Ok', default=False)
+    is_ok = fields.Boolean(string='Ok', default=True)
     observation = fields.Char('Observation')
     frequency = fields.Selection([('day', 'Journalière'),
                                   ('week', 'Hebdomadaire'),

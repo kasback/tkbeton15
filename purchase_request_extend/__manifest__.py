@@ -3,7 +3,8 @@
 {
     "name": u"TKBETON: Demande d'achat",
     "version": "14.0",
-    "depends": ['base', 'purchase_request', 'purchase_requisition', 'supplier_evaluation', 'product', 'product_extend', 'hr'],
+    "depends": ['base', 'purchase_request', 'purchase_requisition',
+                'supplier_evaluation', 'product', 'product_extend', 'hr', 'citerne'],
     "author": "Osisoftware",
     "summary": "",
     'website': '',
