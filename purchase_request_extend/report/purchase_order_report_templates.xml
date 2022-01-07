@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_purchaseorder_document_wo_layout">
-        <t t-call="web.external_layout">
+        <t t-call="web.basic_layout">
             <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/>
             <div class="row">
                 <div class="col-4">
@@ -128,14 +128,14 @@
                     </tbody>
                 </table>
 
-                <div id="total" class="row justify-content-end">
+                <!--<div id="total" class="row justify-content-end">
                     <div class="col-4">
                         <table class="table table-sm">
                             <t t-set="tax_totals" t-value="json.loads(o.tax_totals_json)"/>
                             <t t-call="account.document_tax_totals"/>
                         </table>
                     </div>
-                </div>
+                </div>-->
 
                 <p t-field="o.notes"/>
                 <div class="oe_structure"/>
