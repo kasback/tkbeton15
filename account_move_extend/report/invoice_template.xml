@@ -62,10 +62,12 @@
             </p>
         </xpath>
 
+<!--
         <xpath expr="//div[@id='total']/div/table/t" position="replace">
 
         </xpath>
 
+-->
 
     </template>
 
