@@ -83,7 +83,8 @@
         <field name="binding_view_types">list</field>
         <field name="state">code</field>
         <field name="code">
-            action = records.service_create_maintenance_request()
+            if records:
+                action = records.service_create_maintenance_request()
         </field>
     </record>
 
