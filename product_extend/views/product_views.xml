@@ -20,6 +20,7 @@
                 <field name="uom_id" position="after">
                     <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                     <field name="is_carburant"/>
+                    <field name="fuel_product_cost" attrs="{'invisible': [('is_carburant', '=', False)]}"/>
                     <field name="can_be_manufactured"/>
                 </field>
             </field>

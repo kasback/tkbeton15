@@ -17,6 +17,7 @@ class ServiceConfiguration(models.Model):
 class ServiceLine(models.Model):
     _name = 'maintenance.service.line'
     _rec_name = 'product_id'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     state = fields.Selection([
         ('far', 'Éspacée'),
@@ -68,7 +69,6 @@ class ServiceLine(models.Model):
 
     def service_create_maintenance_request(self):
         for rec in self:
-            print('service_create_maintenance_request', rec)
             product_id = rec.product_id
             rec = rec.equipment_id
             if not rec.maintenance_team_id:
