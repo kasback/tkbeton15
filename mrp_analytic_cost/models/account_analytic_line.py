@@ -11,6 +11,10 @@ class AccountAnalyticLine(models.Model):
         "mrp.production",
         string="Related Manufacturing Order",
     )
+    equipment_id = fields.Many2one('maintenance.equipment', related='manufacturing_order_id.equipment_id',
+                                   string="Équipement", store=True)
+    equipment_category_id = fields.Many2one('maintenance.equipment.category', related='equipment_id.category_id',
+                                            string="Catégorie", store=True)
     stock_move_id = fields.Many2one(
         "stock.move",
         string="Related Stock Move",

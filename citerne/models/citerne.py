@@ -27,9 +27,28 @@ class MaintenanceConsomation(models.Model):
     date = fields.Date('Date', default=fields.Date.today())
     name = fields.Char(string='Numéro de reçu', required=False)
     qty_litres = fields.Float(string="Quantité en litres")
+    fuel_price_unit = fields.Float(string="Coût du litre", compute='compute_fuel_price')
+    fuel_total_cost = fields.Float(string="Coût Total", compute='compute_fuel_price')
     kilometrage = fields.Float(string="Kilométrage", required=True)
     picking_id = fields.Many2one('stock.picking', string="Mouvement de la citerne", copy=False)
     conducteur = fields.Many2one(related='equipment_id.employee_id', string='Employé', readonly=False)
+
+    @api.depends('qty_litres')
+    def compute_fuel_price(self):
+        fuel_product_id = self.env['product.product'].search([('is_carburant', '=', True)], limit=1)
+        for rec in self:
+            rec.fuel_price_unit = 0.0
+            rec.fuel_total_cost = 0.0
+            if fuel_product_id:
+                latest_purchase_line = self.env['purchase.order.line'].search([('product_id', '=', fuel_product_id.id),
+                                                                               ('order_id.state', 'in',
+                                                                                ('purchase', 'done')),
+                                                                               ('date_planned', '<=', rec.date),
+                                                                               ],
+                                                                              order='date_planned DESC', limit=1)
+                if latest_purchase_line:
+                    rec.fuel_price_unit = latest_purchase_line.price_unit
+                    rec.fuel_total_cost = rec.fuel_price_unit * rec.qty_litres
 
     @api.constrains('kilometrage')
     def check_kilometrage(self):

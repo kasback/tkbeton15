@@ -17,6 +17,7 @@
         'views/maintenance_line_views.xml',
         'views/maintenance_audit_views.xml',
         'views/maintenance_audit_lines_views.xml',
+        'views/mrp_production_views.xml',
         'wizard/reinitialize_service_wizard_views.xml',
         'wizard/create_audit_wizard_views.xml',
     ],

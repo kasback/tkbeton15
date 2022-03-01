@@ -23,6 +23,8 @@
                         <group attrs="{'readonly': [('state', '!=', 'draft')]}">
                             <field name="qty_litres"
                                    attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="fuel_price_unit"/>
+                            <field name="fuel_total_cost"/>
                             <field name="kilometrage"/>
                             <field name="picking_id" readonly="1"/>
                         </group>
@@ -42,6 +44,8 @@
                 <field name="conducteur"/>
                 <field name="date"/>
                 <field name="qty_litres"/>
+                <field name="fuel_price_unit"/>
+                <field name="fuel_total_cost"/>
                 <field name="kilometrage"/>
             </tree>
         </field>

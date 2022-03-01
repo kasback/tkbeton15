@@ -29,22 +29,15 @@ class MaintenanceRequest(models.Model):
         for rec in self:
             rec.count_reparations = len(rec.mrp_ids)
 
-    # def write(self, vals):
-    #     if 'stage_id' in vals:
-    #         en_cours_stage_id = self.env.ref('maintenance.stage_1')
-    #         if vals['stage_id'] == en_cours_stage_id.id:
-    #             vals['date_start_unavailability'] = fields.Datetime.now()
-    #         if self.stage_id == en_cours_stage_id and vals['stage_id'] != en_cours_stage_id.id:
-    #             if self.date_start_unavailability:
-    #                 self.equipment_unavailability_time += (fields.Datetime.now() - self.date_start_unavailability).seconds / 3600
-    #                 self.equipment_unavailability_time_in_days += (fields.Datetime.now() - self.date_start_unavailability).days
-    #     return super(MaintenanceRequest, self).write(vals)
-
 
 class MRP(models.Model):
     _inherit = 'mrp.production'
 
     maintenance_request_id = fields.Many2one('maintenance.request', 'Maintenance')
+    equipment_id = fields.Many2one('maintenance.equipment', related='maintenance_request_id.equipment_id',
+                                   string="Équipement", store=True)
+    equipment_category_id = fields.Many2one('maintenance.equipment.category', related='equipment_id.category_id',
+                                            string="Catégorie", store=True)
 
 
 class MaintenanceEquipment(models.Model):

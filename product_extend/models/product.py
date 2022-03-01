@@ -11,6 +11,17 @@ class ProductTemplate(models.Model):
     tag_ids = fields.Many2many('product.tags', string='Étiquettes')
     is_carburant = fields.Boolean('Est un carburant', default=False)
     can_be_manufactured = fields.Boolean('Peut être produit', compute='compute_can_be_manufactured', store=True)
+    fuel_product_cost = fields.Float('Dernier prix du carburant', compute='compute_fuel_product_cost')
+
+    def compute_fuel_product_cost(self):
+        fuel_product_id = self.env['product.product'].search([('is_carburant', '=', True)], limit=1)
+        for rec in self:
+            latest_purchase_line = self.env['purchase.order.line'].search([('product_id', '=', fuel_product_id.id),
+                                                                           ('order_id.state', 'in', ('purchase', 'done')),
+                                                                           ],
+                                                                     order='id DESC', limit=1)
+            if latest_purchase_line:
+                rec.fuel_product_cost = latest_purchase_line.price_unit
 
     @api.depends('route_ids')
     def compute_can_be_manufactured(self):

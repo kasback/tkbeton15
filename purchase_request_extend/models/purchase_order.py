@@ -2,6 +2,7 @@ from odoo import fields, models, api
 from odoo.exceptions import ValidationError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
+
 class PurchaseOder(models.Model):
     _inherit = "purchase.order"
 
