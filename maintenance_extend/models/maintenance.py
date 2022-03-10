@@ -33,11 +33,24 @@ class MaintenanceRequest(models.Model):
 class MRP(models.Model):
     _inherit = 'mrp.production'
 
+    def default_analytic_account_id(self):
+        print('self.maintenance_request_id', self._context)
+        if 'default_maintenance_request_id' in self._context and self._context['default_maintenance_request_id']:
+            maintenance_id = self.env['maintenance.request'].browse(self._context['default_maintenance_request_id'])
+            if maintenance_id.maintenance_type == 'preventive':
+                return self.env.ref('maintenance_extend.account_analytic_account_data_preventive')
+            elif maintenance_id.maintenance_type == 'corrective':
+                return self.env.ref('maintenance_extend.account_analytic_account_data_corrective')
+
     maintenance_request_id = fields.Many2one('maintenance.request', 'Maintenance')
     equipment_id = fields.Many2one('maintenance.equipment', related='maintenance_request_id.equipment_id',
                                    string="Équipement", store=True)
     equipment_category_id = fields.Many2one('maintenance.equipment.category', related='equipment_id.category_id',
                                             string="Catégorie", store=True)
+
+    analytic_account_id = fields.Many2one(
+        comodel_name="account.analytic.account", string="Analytic Account", default=lambda self: self.default_analytic_account_id()
+    )
 
 
 class MaintenanceEquipment(models.Model):

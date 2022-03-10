@@ -1,1 +1,1 @@
-from . import reinitialize_service_wizard, create_audit_wizard
+from . import reinitialize_service_wizard, create_audit_wizard, equipment_unavailability_wizard

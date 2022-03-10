@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+            id="equipment_unavailability_report_id"
+            string="Rapport de compteur d'indisponibilité"
+            model="maintenance.equipment.unavailability.wizard"
+            report_type="qweb-pdf"
+            file="maintenance_extend.equipment_unavailability_report"
+            name="maintenance_extend.equipment_unavailability_report"
+        />
+    </data>
+</odoo>

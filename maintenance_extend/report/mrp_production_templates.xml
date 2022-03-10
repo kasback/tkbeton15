@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_mrporder_inherit" inherit_id="mrp.report_mrporder">
+        <xpath expr="//div[@class='page']/div[4]" position="inside">
+            <div class="col-3">
+                <strong>Catégorie:</strong>
+                <br/>
+                <span t-esc="o.equipment_category_id.name"/>
+            </div>
+            <div class="col-3">
+                <strong>Équipement:</strong>
+                <br/>
+                <span t-esc="o.equipment_id.name"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>
