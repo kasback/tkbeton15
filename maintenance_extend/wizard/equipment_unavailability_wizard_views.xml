@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="maintenance_equipment_unavailability_wizard_form" model="ir.ui.view">
+        <field name="name">maintenance.equipment.unavailability.wizard.form</field>
+        <field name="model">maintenance.equipment.unavailability.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="equipment_id" attrs="{'invisible': [('by_category', '=', True)]}"/>
+                        <field name="by_category" />
+                        <field name="equipment_category_id" attrs="{'invisible': [('by_category', '=', False)]}"/>
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="generate_data" string="Générer" type="object" default_focus="1"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="open_view_maintenance_equipment_unavailability" model="ir.actions.act_window">
+        <field name="name">Compteur d'indisponibilité</field>
+        <field name="res_model">maintenance.equipment.unavailability.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem name="Compteur d'indisponibilité"
+              id="maintenance_equipment_unavailability_menu_item"
+              action="open_view_maintenance_equipment_unavailability"
+              parent="maintenance.menu_m_reports"
+    />
+
+</odoo>

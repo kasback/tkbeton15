@@ -30,7 +30,6 @@ class MRPWorkorder(models.Model):
     _inherit = "mrp.workorder"
 
     def _prepare_mrp_workorder_analytic_item(self):
-        print('self.production_id.id', self.production_id.id)
         self.ensure_one()
         return {
             "name": "{} / {}".format(self.production_id.name, self.name),
@@ -50,8 +49,6 @@ class MRPWorkorder(models.Model):
         #     "production_id.analytic_account_id"
         # )
         workorders = self
-        print('workorders', workorders)
-        print('SELF', self)
         existing_items = workorders and AnalyticLine.search(
             [("workorder_id", "in", self.ids)]
         )
@@ -77,7 +74,6 @@ class MRPWorkorder(models.Model):
 
     def write(self, vals):
         res = super().write(vals)
-        print('write vals', vals.get("duration"))
         if vals.get("duration"):
             self.generate_mrp_work_analytic_line()
         return res

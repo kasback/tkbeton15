@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="groups_new_product_purchase_alert" model="res.groups">
-            <field name="name">Alerte Lors de l'achat d'un nouveau produit</field>
-        </record>
         <record id="groups_new_product_create_alert" model="res.groups">
             <field name="name">Alerte Lors de la création d'un nouveau produit</field>
         </record>
