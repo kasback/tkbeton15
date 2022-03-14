@@ -21,7 +21,7 @@
         <field name="arch" type="xml">
             <xpath expr="//search" position="inside">
                 <filter string="Éspèces" name="purchase_order_cash"
-                        domain="[('tag_ids', 'ilike', 'Éspèces')]"/>
+                        domain="[('tag_ids', 'ilike', 'Espèce')]"/>
             </xpath>
         </field>
     </record>
