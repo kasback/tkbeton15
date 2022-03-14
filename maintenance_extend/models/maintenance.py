@@ -34,7 +34,6 @@ class MRP(models.Model):
     _inherit = 'mrp.production'
 
     def default_analytic_account_id(self):
-        print('self.maintenance_request_id', self._context)
         if 'default_maintenance_request_id' in self._context and self._context['default_maintenance_request_id']:
             maintenance_id = self.env['maintenance.request'].browse(self._context['default_maintenance_request_id'])
             if maintenance_id.maintenance_type == 'preventive':
@@ -60,7 +59,7 @@ class MaintenanceEquipment(models.Model):
     parent_id = fields.Many2one('maintenance.equipment', 'Équipement Parent')
     odometer_ids = fields.One2many('maintenance.equipment.odometer', 'equipment_id', string='Odomètre')
     count_odometer = fields.Integer('Comptage de kilomètrage', compute='_get_odometre_count')
-    is_vehicle = fields.Boolean('Est un véhicule', default=False)
+    is_vehicle = fields.Boolean('Est un véhicule', default=True)
     odometer_unit = fields.Selection([
         ('kilometers', 'km'),
         ('hours', 'H')
