@@ -28,5 +28,14 @@
             <field name="numbercall">-1</field>
             <field name="doall" eval="False"/>
         </record>
+
+        <record id="account_analytic_account_data_corrective" model="account.analytic.account">
+            <field name="name">Maintenance Corrective</field>
+        </record>
+
+        <record id="account_analytic_account_data_preventive" model="account.analytic.account">
+            <field name="name">Maintenance Préventive</field>
+        </record>
+
     </data>
 </odoo>

@@ -2,6 +2,13 @@ from odoo import fields, models, api
 from odoo.exceptions import ValidationError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
+
+class PurchaseTags(models.Model):
+    _name = "purchase.tag"
+
+    name = fields.Char('Nom')
+
+
 class PurchaseOder(models.Model):
     _inherit = "purchase.order"
 
@@ -10,6 +17,7 @@ class PurchaseOder(models.Model):
     company_currency_id = fields.Many2one('res.currency', string='Company Currency', required=True, readonly=True,
                                   default=lambda self: self.env.user.company_id.currency_id.id)
     amount_in_mad = fields.Monetary('Montant en DH', currency_field='company_currency_id', compute='compute_amount_in_mad')
+    tag_ids = fields.Many2many('purchase.tag', string='Étiquettes')
 
     def button_confirm(self):
         if self.requisition_id and self.amount_in_mad >= 5000 and not self.validation_dg:

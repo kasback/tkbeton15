@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <tree string="Odometer Logs" editable="top">
                     <field name="date"/>
-                    <field name="equipment_id" required="1" widget="many2one_avatar"/>
+                    <field name="equipment_id" required="1"/>
                     <field name="driver_id" widget="many2one_avatar"/>
                     <field name="value"/>
                     <field name="unit"/>
@@ -20,10 +20,15 @@
         <record id="maintenance_equipment_kanban_inherit_availability" model="ir.ui.view">
             <field name="name">maintenance.equipment.availability.kanban</field>
             <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance.hr_equipment_view_kanban" />
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_kanban"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[@class='oe_kanban_bottom_right']" position="inside">
                     <field name="kanban_state" widget="kanban_state_selection"/>
+                </xpath>
+                <xpath expr="//div[@class='o_kanban_record_body']/div[1]" position="before">
+                    <div t-if="record.parent_id.raw_value">
+                        <field name="parent_id"/>
+                    </div>
                 </xpath>
             </field>
         </record>
@@ -31,11 +36,11 @@
         <record id="maintenance_equipment_tree_inherit_availability" model="ir.ui.view">
             <field name="name">maintenance.equipment.availability.tree</field>
             <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance.hr_equipment_view_tree" />
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='company_id']" position="after">
                     <field name="kanban_state" widget="kanban_state_selection"/>
-                    <field name="equipment_unavailability_time" />
+                    <field name="equipment_unavailability_time"/>
                 </xpath>
             </field>
         </record>
@@ -43,11 +48,14 @@
         <record id="maintenance_equipment_search_inherit_availability" model="ir.ui.view">
             <field name="name">maintenance.equipment.availability.search</field>
             <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance.hr_equipment_view_search" />
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_search"/>
             <field name="arch" type="xml">
                 <xpath expr="//filter[@name='available']" position="after">
                     <filter string="Disponibles" name="not_blocked" domain="[('kanban_state', '=', 'done')]"/>
                     <filter string="Indisponibles" name="blocked" domain="[('kanban_state', '=', 'blocked')]"/>
+                </xpath>
+                <xpath expr="//group" position="inside">
+                    <filter string="Parent" name="parent_id" domain="[]" context="{'group_by': 'parent_id'}"/>
                 </xpath>
             </field>
         </record>
@@ -84,8 +92,9 @@
                     </div>
                 </xpath>
                 <xpath expr="//form/sheet/group/group[1]" position="inside">
-                    <field name="is_vehicle" invisible="0"/>
-                    <field name="equipment_unavailability_time" />
+                    <field name="is_vehicle"/>
+                    <field name="parent_id"/>
+                    <field name="equipment_unavailability_time"/>
                     <field name="group_id" options="{'no_create': True}"/>
                     <label for="odometer" attrs="{'invisible' : [('is_vehicle', '=', False)]}"/>
                     <div class="o_row" attrs="{'invisible' : [('is_vehicle', '=', False)]}">

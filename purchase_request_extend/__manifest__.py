@@ -17,6 +17,7 @@
         'report/report.xml',
         'security/groups.xml',
         'security/rules.xml',
+        'security/ir.model.access.csv',
         'views/purchase_request_views.xml',
         'views/purchase_order_views.xml',
     ],

@@ -29,22 +29,27 @@ class MaintenanceRequest(models.Model):
         for rec in self:
             rec.count_reparations = len(rec.mrp_ids)
 
-    # def write(self, vals):
-    #     if 'stage_id' in vals:
-    #         en_cours_stage_id = self.env.ref('maintenance.stage_1')
-    #         if vals['stage_id'] == en_cours_stage_id.id:
-    #             vals['date_start_unavailability'] = fields.Datetime.now()
-    #         if self.stage_id == en_cours_stage_id and vals['stage_id'] != en_cours_stage_id.id:
-    #             if self.date_start_unavailability:
-    #                 self.equipment_unavailability_time += (fields.Datetime.now() - self.date_start_unavailability).seconds / 3600
-    #                 self.equipment_unavailability_time_in_days += (fields.Datetime.now() - self.date_start_unavailability).days
-    #     return super(MaintenanceRequest, self).write(vals)
-
 
 class MRP(models.Model):
     _inherit = 'mrp.production'
 
+    def default_analytic_account_id(self):
+        if 'default_maintenance_request_id' in self._context and self._context['default_maintenance_request_id']:
+            maintenance_id = self.env['maintenance.request'].browse(self._context['default_maintenance_request_id'])
+            if maintenance_id.maintenance_type == 'preventive':
+                return self.env.ref('maintenance_extend.account_analytic_account_data_preventive')
+            elif maintenance_id.maintenance_type == 'corrective':
+                return self.env.ref('maintenance_extend.account_analytic_account_data_corrective')
+
     maintenance_request_id = fields.Many2one('maintenance.request', 'Maintenance')
+    equipment_id = fields.Many2one('maintenance.equipment', related='maintenance_request_id.equipment_id',
+                                   string="Équipement", store=True)
+    equipment_category_id = fields.Many2one('maintenance.equipment.category', related='equipment_id.category_id',
+                                            string="Catégorie", store=True)
+
+    analytic_account_id = fields.Many2one(
+        comodel_name="account.analytic.account", string="Analytic Account", default=lambda self: self.default_analytic_account_id()
+    )
 
 
 class MaintenanceEquipment(models.Model):
@@ -54,7 +59,7 @@ class MaintenanceEquipment(models.Model):
     parent_id = fields.Many2one('maintenance.equipment', 'Équipement Parent')
     odometer_ids = fields.One2many('maintenance.equipment.odometer', 'equipment_id', string='Odomètre')
     count_odometer = fields.Integer('Comptage de kilomètrage', compute='_get_odometre_count')
-    is_vehicle = fields.Boolean('Est un véhicule', default=False)
+    is_vehicle = fields.Boolean('Est un véhicule', default=True)
     odometer_unit = fields.Selection([
         ('kilometers', 'km'),
         ('hours', 'H')

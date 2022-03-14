@@ -18,6 +18,7 @@ class MaintenanceLine(models.Model):
                                   ('week', 'Hebdomadaire'),
                                   ('month', 'Mensuelle'),
                                   ('tri', 'Trimestrielle'),
+                                  ('sem', 'Semestrielle'),
                                   ('year', 'Annuelle'),
                                   ], default='day',
                                  string="Fréquence")
@@ -75,6 +76,8 @@ class MaintenanceLine(models.Model):
                 rec.next_maintenance_date = rec.last_maintenance_date + datetime.timedelta(weeks=1)
             elif rec.frequency == 'tri':
                 rec.next_maintenance_date = rec.last_maintenance_date + datetime.timedelta(days=90)
+            elif rec.frequency == 'sem':
+                rec.next_maintenance_date = rec.last_maintenance_date + datetime.timedelta(days=182)
             elif rec.frequency == 'year':
                 rec.next_maintenance_date = rec.last_maintenance_date + datetime.timedelta(days=365)
             else:

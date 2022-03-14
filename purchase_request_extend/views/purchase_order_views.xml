@@ -8,8 +8,34 @@
             <xpath expr="//field[@name='requisition_id']" position="after">
                 <field name="validation_daf" groups="supplier_evaluation.group_daf"/>
                 <field name="validation_dg" groups="supplier_evaluation.group_dg"/>
-                <field name="amount_in_mad" />
+                <field name="amount_in_mad"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'no_create': True, 'no_edit': True}"/>
             </xpath>
         </field>
     </record>
+
+    <record id="purchase_order_search_inherit_tags" model="ir.ui.view">
+        <field name="name">purchase.order.search.inherit.tags</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="Éspèces" name="purchase_order_cash"
+                        domain="[('tag_ids', 'ilike', 'Espèce')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_tags_action" model="ir.actions.act_window">
+        <field name="name">Étiquettes des Achats</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.tag</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Étiquettes des Achats"
+              id="purchase_tags_menu_item"
+              action="purchase_tags_action"
+              parent="purchase.menu_purchase_config"
+    />
 </odoo>

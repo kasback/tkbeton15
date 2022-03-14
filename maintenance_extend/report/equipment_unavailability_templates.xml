@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="equipment_unavailability_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <h2 align="center">
+                        <b>Compteur d'indisponibilité du
+                            <t t-esc="date_start"/>
+                            au
+                            <t t-esc="date_end"/>
+                        </b>
+                    </h2>
+                    <h3 align="center">
+                        <t t-if="category_id">
+                            Catégorie :
+                            <t t-esc="category_id.name"/>
+                        </t>
+                        <t t-if="equipment_id">
+                            Équipement
+                            <t t-esc="equipment_id.name"/>
+                        </t>
+                    </h3>
+                    <table class="table table-sm o_main_table">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Equipement</th>
+                                <th class="text-left">Catégorie de l'équipement</th>
+                                <th class="text-left">Compteur d'indisponibilité</th>
+                                <th class="text-left">Ratio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="lines" t-as="line">
+                                <tr>
+                                    <td>
+                                        <span t-field="line['equipment_id'].name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line['equipment_id'].category_id.name"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="line['unavailable_time']"/>
+                                        <span>Jours</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="line['unavailable_ratio']"/> %
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

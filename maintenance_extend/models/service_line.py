@@ -17,6 +17,7 @@ class ServiceConfiguration(models.Model):
 class ServiceLine(models.Model):
     _name = 'maintenance.service.line'
     _rec_name = 'product_id'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     state = fields.Selection([
         ('far', 'Éspacée'),
@@ -71,7 +72,8 @@ class ServiceLine(models.Model):
             product_id = rec.product_id
             rec = rec.equipment_id
             if not rec.maintenance_team_id:
-                raise ValidationError('Veuillez renseigner l\'équipe de maintenance au niveau de l\'équipement %s', rec.name)
+                raise ValidationError('Veuillez renseigner l\'équipe de maintenance au niveau de l\'équipement %s' % rec.name)
+
             self.env['maintenance.request'].create({
                 'name': 'Maintenance - %s - %s - %s' % (rec.name, str(fields.Date.today()), product_id.name),
                 'request_date': fields.Date.today(),
