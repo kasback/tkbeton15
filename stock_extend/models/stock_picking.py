@@ -50,6 +50,10 @@ class StockPicking(models.Model):
 
     def button_validate(self):
         move_lines = self.move_ids_without_package.filtered(lambda l: l.quantity_done > 0)
+        if self.purchase_id:
+            self.purchase_id.write({
+                'date_planned': self.real_date
+            })
         if self.intercompany_transfer:
             for move in move_lines:
                 SaleOrder = self.env['sale.order']

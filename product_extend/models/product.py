@@ -33,10 +33,11 @@ class ProductTemplate(models.Model):
     def compute_fuel_product_cost(self):
         fuel_product_id = self.env['product.product'].search([('is_carburant', '=', True)], limit=1)
         for rec in self:
+            rec.fuel_product_cost = 0.0
             latest_purchase_line = self.env['purchase.order.line'].search([('product_id', '=', fuel_product_id.id),
                                                                            ('order_id.state', 'in', ('purchase', 'done')),
                                                                            ],
-                                                                     order='id DESC', limit=1)
+                                                                          order='id DESC', limit=1)
             if latest_purchase_line:
                 rec.fuel_product_cost = latest_purchase_line.price_unit
 
