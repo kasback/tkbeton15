@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="new_intercompany_sale_group_users" model="res.groups">
+            <field name="name">Alerte Lors de la création d'une vente inter-entreprise</field>
+        </record>
+    </data>
+</odoo>
