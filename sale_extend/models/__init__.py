@@ -1,1 +1,1 @@
-from . import purchase_request, purchase_order
+from . import sale_order

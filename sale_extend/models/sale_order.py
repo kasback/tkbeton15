@@ -10,13 +10,13 @@ class SaleOder(models.Model):
     def create(self, vals):
         res = super(SaleOder, self).create(vals)
         new_intercompany_sale_group_users = self.env.ref('sale_extend.groups_new_product_create_alert').users
-        if 'auto_generated' in vals and vals['auto_generated'] and new_product_group_users:
-            for user in new_product_group_users:
+        if 'auto_generated' in vals and vals['auto_generated'] and new_intercompany_sale_group_users:
+            for user in new_intercompany_sale_group_users:
                 if 'name' in vals and vals['name'] == 'new':
                     activity_id = self.sudo().env['mail.activity'].create({
-                        'summary': 'Alerte de la création d\'un nouveau produit ' + vals['name'],
+                        'summary': 'Alerte de la création d\'une vente Intercompany ' + vals['name'],
                         'activity_type_id': self.sudo().env.ref('mail.mail_activity_data_todo').id,
-                        'res_model_id': self.sudo().env['ir.model'].search([('model', '=', 'product.template')], limit=1).id,
+                        'res_model_id': self.sudo().env['ir.model'].search([('model', '=', 'sale.order')], limit=1).id,
                         'note': "",
                         'res_id': res.id,
                         'user_id': user.id
