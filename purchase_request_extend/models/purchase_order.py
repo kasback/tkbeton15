@@ -19,6 +19,17 @@ class PurchaseOder(models.Model):
     amount_in_mad = fields.Monetary('Montant en DH', currency_field='company_currency_id', compute='compute_amount_in_mad')
     tag_ids = fields.Many2many('purchase.tag', string='Étiquettes')
 
+    purchase_request_id = fields.Many2one('purchase.request', compute='compute_purchase_request_id',
+                                          string='Demande d\'achat', store=True)
+
+    request_validation_date = fields.Date(related='purchase_request_id.validation_date', string='Date de validation DA',
+                                          store=True)
+
+    @api.depends('order_line', 'order_line.purchase_request_lines')
+    def compute_purchase_request_id(self):
+        for rec in self:
+            rec.purchase_request_id = rec.mapped("order_line.purchase_request_lines.request_id")
+
     def button_confirm(self):
         if self.requisition_id and self.amount_in_mad >= 5000 and not self.validation_dg:
             raise ValidationError('La validation du DG est requise')
