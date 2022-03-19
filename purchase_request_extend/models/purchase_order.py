@@ -38,6 +38,7 @@ class PurchaseOder(models.Model):
         return super(PurchaseOder, self).button_confirm()
 
     def compute_amount_in_mad(self):
+        self = self.sudo()
         for rec in self:
             rec.amount_in_mad = rec.currency_id._convert(
                 rec.amount_total, rec.company_currency_id, rec.company_id,
