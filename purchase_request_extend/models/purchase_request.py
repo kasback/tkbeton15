@@ -99,6 +99,15 @@ class PurchaseRequest(models.Model):
              "removing it.",
         default=True,
     )
+    purchase_order_ids = fields.Many2many('purchase.order', compute='compute_purchase_order_ids',
+                                          string='Bons de commandes', store=True)
+    validation_date = fields.Date('Date de validation')
+    equipment_id = fields.Many2one('maintenance.equipment', string='Équipement')
+
+    @api.depends('line_ids', 'line_ids.purchase_lines')
+    def compute_purchase_order_ids(self):
+        for rec in self:
+            rec.purchase_order_ids = [(4, o.id) for o in rec.mapped("line_ids.purchase_lines.order_id")]
 
     @api.model
     def create(self, vals):
@@ -157,7 +166,7 @@ class PurchaseRequest(models.Model):
                 }
 
     def button_approved_resp(self):
-        return self.write({"state": "to_approve"})
+        return self.write({"state": "to_approve", "validation_date": fields.Date.today()})
 
     def button_to_approve(self):
         user_id = self.sudo().env['res.users'].browse(self.responsible_id.id)
