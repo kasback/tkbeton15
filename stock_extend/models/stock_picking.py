@@ -13,8 +13,8 @@ class PurchaseOrder(models.Model):
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    transporteur_id = fields.Many2one('res.partner', string='Transporteur')
-    supplier_number = fields.Char('BL fournisseur')
+    transporteur_id = fields.Many2one('res.partner', string='Transporteur', copy=False)
+    supplier_number = fields.Char('BL fournisseur', copy=False)
     real_date = fields.Datetime('Date Effective', required=False)
     depart_usine = fields.Boolean('Départ Usine', default=False)
     city = fields.Many2one('product.product', 'Ville')
