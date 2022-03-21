@@ -84,6 +84,7 @@ class MaintenanceLine(models.Model):
                 rec.next_maintenance_date = rec.last_maintenance_date + datetime.timedelta(days=1)
 
     def create_maintenance_from_equipment(self):
+        self = self.sudo()
         for rec in self:
             equipment_id = rec.equipment_id
             if not equipment_id.maintenance_team_id:
@@ -106,6 +107,7 @@ class MaintenanceLine(models.Model):
             rec.write({'last_maintenance_date': fields.Date.today()})
 
     def open_create_audit_wizard(self):
+        self = self.sudo()
         wizard_maintenace_lines = []
         for rec in self:
             wizard_maintenace_lines.append((0, 0, {
