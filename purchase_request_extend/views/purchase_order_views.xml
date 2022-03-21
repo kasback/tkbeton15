@@ -6,6 +6,7 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='requisition_id']" position="after">
+                <field name="request_validation_date"/>
                 <field name="validation_daf" groups="supplier_evaluation.group_daf"/>
                 <field name="validation_dg" groups="supplier_evaluation.group_dg"/>
                 <field name="amount_in_mad"/>
@@ -14,17 +15,58 @@
             <xpath expr="//field[@name='effective_date']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr="//field[@name='date_order']" position="attributes">
+                <attribute name="attrs">{'invisible': False}</attribute>
+                <attribute name="string">Date Commande</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_order']" position="before">
+                <field name="request_validation_date" />
+            </xpath>
         </field>
     </record>
 
-    <record id="purchase_order_search_inherit_tags" model="ir.ui.view">
-        <field name="name">purchase.order.search.inherit.tags</field>
+    <record id="view_purchase_order_tree_inherit_pr" model="ir.ui.view">
+        <field name="name">purchase.order.tree.inherit.pr</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="purchase_request_id"/>
+                <field name="request_validation_date"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_filter_inherit_tags" model="ir.ui.view">
+        <field name="name">purchase.order.filter.inherit.tags</field>
         <field name="model">purchase.order</field>
         <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
         <field name="arch" type="xml">
             <xpath expr="//search" position="inside">
                 <filter string="Éspèces" name="purchase_order_cash"
                         domain="[('tag_ids', 'ilike', 'Espèce')]"/>
+                <filter
+                        name="purchase_wo_request"
+                        string="Sans DA"
+                        domain="[('purchase_request_id','=', False)]"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_search_inherit_tags" model="ir.ui.view">
+        <field name="name">purchase.order.search.inherit.tags</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="Éspèces" name="purchase_order_cash"
+                        domain="[('tag_ids', 'ilike', 'Espèce')]"/>
+                <filter
+                        name="purchase_wo_request"
+                        string="Sans DA"
+                        domain="[('purchase_request_id','=', False)]"
+                />
             </xpath>
         </field>
     </record>

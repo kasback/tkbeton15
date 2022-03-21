@@ -81,6 +81,8 @@
                 </field>
                 <field name="assigned_to" position="after">
                     <field name="responsible_id"/>
+                    <field name="validation_date"/>
+                    <field name="equipment_id"/>
                     <field name="dg_id" readonly="1" invisible="1"/>
                     <field name="daf_id" readonly="1" invisible="1"/>
                     <field name="tender_id"/>
@@ -116,6 +118,8 @@
             <field name="arch" type="xml">
                 <field name="requested_by" position="after">
                     <field name="purchase_reason"/>
+                    <field name="equipment_id"/>
+                    <field name="purchase_order_ids" widget="many2many_tags"/>
                 </field>
             </field>
         </record>
@@ -135,6 +139,14 @@
                             name="purchase_reason"
                             string="Urgent"
                             domain="[('purchase_reason','=', 'urgent')]"
+                    />
+                </xpath>
+                <xpath expr="//group" position="inside">
+                    <filter
+                        name="equipment_id"
+                        string="Équipement"
+                        domain="[]"
+                        context="{'group_by':'equipment_id'}"
                     />
                 </xpath>
             </field>
