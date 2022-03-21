@@ -18,6 +18,7 @@ class EquipmentUnavailabilityWizard(models.TransientModel):
             self.equipment_category_id = False
 
     def generate_data(self):
+        self = self.sudo()
         datas = {
             'data': {
                 'equipment_id': self.equipment_id.id,

@@ -313,6 +313,8 @@ class PurchaseRequestLine(models.Model):
             rec.purchased_qty = 0.0
             for line in rec.purchase_lines.filtered(lambda x: x.state != "cancel"):
                 if rec.product_uom_id and line.product_uom != rec.product_uom_id:
+                    if line.product_uom.category_id != rec.product_uom_id.category_id:
+                        rec.write({'product_uom_id': line.product_uom})
                     rec.purchased_qty += line.product_uom._compute_quantity(
                         line.product_qty, rec.product_uom_id
                     )

@@ -11,6 +11,7 @@ class CreateAuditWizard(models.TransientModel):
     maintenance_line_ids = fields.One2many('create.audit.wizard.line', 'create_audit_wizard_id', 'Lignes de maintenance')
 
     def action_create_audit(self):
+        self = self.sudo()
         audit_lines = []
         for rec in self.maintenance_line_ids:
             audit_lines.append((0, 0, {
