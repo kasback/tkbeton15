@@ -53,7 +53,7 @@ class ProductTemplate(models.Model):
         new_product_group_users = self.env.ref('product_extend.groups_new_product_create_alert').users
         if new_product_group_users:
             for user in new_product_group_users:
-                if 'name' in vals and vals['name'] == 'new':
+                if 'name' in vals:
                     activity_id = self.sudo().env['mail.activity'].create({
                         'summary': 'Alerte de la création d\'un nouveau produit ' + vals['name'],
                         'activity_type_id': self.sudo().env.ref('mail.mail_activity_data_todo').id,

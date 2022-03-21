@@ -47,6 +47,20 @@ class MaintenanceAudit(models.Model):
                     'employee_id': self.responsible_id.id,
                     'nature': rec.nature
                 })
+                new_maintenance_group_users = self.env.ref('maintenance_extend.groups_new_maintenance_alert').users
+                if new_maintenance_group_users:
+                    for user in new_maintenance_group_users:
+                        activity_id = self.sudo().env['mail.activity'].create({
+                            'summary': 'Alerte de la création de la maintenance %s ' %
+                                       maintenance_id.name,
+                            'activity_type_id': self.sudo().env.ref('mail.mail_activity_data_todo').id,
+                            'res_model_id': self.sudo().env['ir.model'].search([('model', '=', 'maintenance.request')],
+                                                                               limit=1).id,
+                            'note': "",
+                            'res_id': maintenance_id.id,
+                            'user_id': user.id
+                        })
+
                 generated_maintenances.append((4, maintenance_id.id))
             rec.maintenance_line_id.write({
                 'last_maintenance_date': fields.date.today()
@@ -58,8 +72,9 @@ class MaintenanceAudit(models.Model):
 
     def to_draft(self):
         if self.maintenance_ids:
-            raise ValidationError('Vous ne pouvez pas remettre en brouillon un audit avec des demandes de maintenances existantes, '
-                                  'Veuillez tout d\'abord les supprimer')
+            raise ValidationError(
+                'Vous ne pouvez pas remettre en brouillon un audit avec des demandes de maintenances existantes, '
+                'Veuillez tout d\'abord les supprimer')
         self.write({
             'state': 'open'
         })
@@ -85,5 +100,3 @@ class MaintenanceAuditLine(models.Model):
                                   ('year', 'Annuelle'),
                                   ], default='day',
                                  string="Fréquence")
-
-

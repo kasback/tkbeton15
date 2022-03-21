@@ -10,7 +10,7 @@ class SaleOder(models.Model):
         new_intercompany_sale_group_users = self.env.ref('sale_extend.new_intercompany_sale_group_users').users
         if 'auto_generated' in vals and vals['auto_generated'] and new_intercompany_sale_group_users:
             for user in new_intercompany_sale_group_users:
-                if 'name' in vals and vals['name'] == 'new':
+                if 'name' in vals:
                     activity_id = self.sudo().env['mail.activity'].create({
                         'summary': 'Alerte de la création d\'une vente Intercompany ' + vals['name'],
                         'activity_type_id': self.sudo().env.ref('mail.mail_activity_data_todo').id,
