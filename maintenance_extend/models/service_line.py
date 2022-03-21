@@ -49,6 +49,7 @@ class ServiceLine(models.Model):
                 rec.state = 'past'
 
     def open_reinitialize_wizard(self):
+        self = self.sudo()
         action = self.env.ref('maintenance_extend.action_reinitialize_service').read()[0]
         line_ids = []
         for rec in self:
