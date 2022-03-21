@@ -16,6 +16,7 @@ class ReinitializeServiceWizard(models.TransientModel):
     multiple_equipments = fields.Boolean('Équipements Multiples', default=True)
 
     def reinitialize(self):
+        self = self.sudo()
         for line in self.line_ids:
             if line.reinitialize:
                 line_obj = self.env['maintenance.service.line'].browse(line.service_line_id)

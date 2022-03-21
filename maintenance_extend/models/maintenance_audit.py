@@ -23,12 +23,14 @@ class MaintenanceAudit(models.Model):
             rec.maintenance_count = len(rec.maintenance_ids)
 
     def open_audit_lines(self):
+        self = self.sudo()
         action = self.sudo().env.ref('maintenance_extend.open_view_equipment_maintenance_line').read()[0]
         action['domain'] = [('audit_id', '=', self.id)]
         action['context'] = {'default_audit_id': self.id}
         return action
 
     def validate_audit(self):
+        self = self.sudo()
         generated_maintenances = []
         for rec in self.audit_lines:
             if not rec.is_ok:
