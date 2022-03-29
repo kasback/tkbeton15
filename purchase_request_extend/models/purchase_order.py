@@ -33,7 +33,7 @@ class PurchaseOder(models.Model):
     def button_confirm(self):
         if self.requisition_id and self.amount_in_mad >= 5000 and not self.validation_dg:
             raise ValidationError('La validation du DG est requise')
-        if self.requisition_id and not self.validation_daf and not self.validation_dg:
+        if not self.validation_daf:
             raise ValidationError('La validation de la DAF est requise')
         return super(PurchaseOder, self).button_confirm()
 

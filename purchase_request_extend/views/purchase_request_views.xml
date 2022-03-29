@@ -120,6 +120,7 @@
                     <field name="purchase_reason"/>
                     <field name="equipment_id"/>
                     <field name="purchase_order_ids" widget="many2many_tags"/>
+                    <field name="description" />
                 </field>
             </field>
         </record>

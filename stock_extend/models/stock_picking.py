@@ -21,6 +21,8 @@ class StockPicking(models.Model):
     intercompany_transfer = fields.Boolean('Transfert Inter-Société', default=False)
     company_dest_id = fields.Many2one('res.company', 'Société destinataire')
     percent = fields.Float('Pourcentage')
+    purchase_request_id = fields.Many2one('purchase.request', related='purchase_id.purchase_request_id',
+                                          string='Demande d\'Achat')
 
     def prepare_sale_order_lines(self, move_ids):
         for move in move_ids:
