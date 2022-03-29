@@ -396,7 +396,7 @@
             <form
                 string="Purchase Order Lines"
                 create="false"
-                attrs="{'readonly': True}"
+                attrs="{'readonly': False}"
             >
                 <sheet>
                     <label
@@ -450,6 +450,7 @@
                                     attrs="{'invisible': True}"
                                 />
                             </div>
+                            <field name="qty_received" attrs="{'readonly': False}"/>
                             <field
                                 name="price_unit"
                                 widget="monetary"

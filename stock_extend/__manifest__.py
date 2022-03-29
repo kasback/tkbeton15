@@ -3,7 +3,7 @@
 {
     "name": u"TKBETON: Stock",
     "version": "14.0",
-    "depends": ['base', 'product', 'stock', 'hr', 'product_extend', 'purchase'],
+    "depends": ['base', 'product', 'stock', 'hr', 'product_extend', 'purchase', 'purchase_request'],
     "author": "Osisoftware",
     "summary": "",
     'website': '',

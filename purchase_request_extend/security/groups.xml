@@ -4,5 +4,32 @@
         <record id="groups_new_product_purchase_alert" model="res.groups">
             <field name="name">Alerte Lors de l'achat d'un nouveau produit</field>
         </record>
+        <record model="res.groups" id="group_dg">
+            <field name="name">DG</field>
+        </record>
+
+        <record model="res.groups" id="group_daf">
+            <field name="name">DAF</field>
+        </record>
+
+        <record model="res.groups" id="group_al">
+            <field name="name">Responsable achat local</field>
+            <field
+                    name="implied_ids"
+                    eval="[(4, ref('purchase_request.group_purchase_request_user'))]"
+            />
+            <field name="category_id" ref="purchase_request.module_category_purchase_request"/>
+
+        </record>
+
+        <record model="res.groups" id="group_ai">
+            <field name="name">Responsable Achat import</field>
+            <field
+                    name="implied_ids"
+                    eval="[(4, ref('purchase_request.group_purchase_request_user'))]"
+            />
+            <field name="category_id" ref="purchase_request.module_category_purchase_request"/>
+
+        </record>
     </data>
 </odoo>

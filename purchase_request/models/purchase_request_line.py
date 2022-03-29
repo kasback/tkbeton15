@@ -176,13 +176,20 @@ class PurchaseRequestLine(models.Model):
         help="Estimated cost of Purchase Request Line, not propagated to PO.",
     )
     # currency_id = fields.Many2one(related="company_id.currency_id", readonly=True)
-    currency_id = fields.Many2one(related="supplier_id.property_purchase_currency_id")
+    currency_id = fields.Many2one('res.currency', compute="compute_currency_id")
     product_id = fields.Many2one(
         comodel_name="product.product",
         string="Product",
         domain=[("purchase_ok", "=", True)],
         tracking=True,
     )
+
+    @api.depends('supplier_id', 'company_id')
+    def compute_currency_id(self):
+        for rec in self:
+            rec.currency_id = rec.company_id.currency_id.id
+            if rec.supplier_id.property_purchase_currency_id:
+                rec.currency_id = rec.supplier_id.property_purchase_currency_id.id
 
     @api.depends(
         "purchase_request_allocation_ids",

@@ -23,6 +23,9 @@
                         <field name="supplier_number" placeholder="Numéro de BL fournisseur" attrs="{'required': [('picking_type_code', '!=', 'internal')], 'invisible': [('picking_type_code', '=', 'internal')]}"/>
                     </h2>
                 </xpath>
+                <field name="user_id" position="after">
+                    <field name="purchase_request_id" />
+                </field>
             </field>
         </record>
 
@@ -32,12 +35,12 @@
             <field name="inherit_id" ref="stock.vpicktree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="purchase_request_id" />
                     <field name="transporteur_id"/>
                     <field name="supplier_number"/>
                     <field name="date_done" string="Date d'execution"/>
                     <field name="real_date" string="Date Effective"/>
                 </xpath>
-
             </field>
         </record>
 
@@ -48,6 +51,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//search/field[1]" position="before">
                     <field name="supplier_number" />
+                    <field name="purchase_request_id" />
                 </xpath>
                 <xpath expr="//search/group" position="inside">
                     <filter string="Fournisseur" name="partner_id" domain="[]" context="{'group_by': 'partner_id'}"/>

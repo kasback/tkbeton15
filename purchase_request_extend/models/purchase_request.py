@@ -32,7 +32,7 @@ class PurchaseRequest(models.Model):
     _inherit = "purchase.request"
 
     def _get_dg(self):
-        group_dg = self.env.ref('supplier_evaluation.group_dg')
+        group_dg = self.env.ref('purchase_request_extend.group_dg')
         if group_dg.users:
             return group_dg.users[0]
 
@@ -199,7 +199,7 @@ class PurchaseRequest(models.Model):
         })
 
     def _get_dg_task_domain(self):
-        group_dg = self.env.ref('supplier_evaluation.group_dg')
+        group_dg = self.env.ref('purchase_request_extend.group_dg')
         return [('id', 'in', group_dg.users.mapped('id'))]
 
     def _get_daf_task_domain(self):
@@ -209,8 +209,8 @@ class PurchaseRequest(models.Model):
     @api.depends('purchase_type')
     def _compute_resp_achat(self):
         for rec in self:
-            group_resp_achat_local = self.env.ref('supplier_evaluation.group_al')
-            group_resp_achat_import = self.env.ref('supplier_evaluation.group_ai')
+            group_resp_achat_local = self.env.ref('purchase_request_extend.group_al')
+            group_resp_achat_import = self.env.ref('purchase_request_extend.group_ai')
             if self.purchase_type == 'local':
                 if group_resp_achat_local.users:
                     rec.assigned_to = group_resp_achat_local.users[0]
