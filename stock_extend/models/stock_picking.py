@@ -52,9 +52,7 @@ class StockPicking(models.Model):
 
     def button_validate(self):
         self = self.sudo()
-        print('self', self)
         for rec in self:
-            print('rec', rec)
             move_lines = rec.move_ids_without_package.filtered(lambda l: l.quantity_done > 0)
             if rec.purchase_id:
                 rec.purchase_id.write({
