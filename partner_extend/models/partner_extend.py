@@ -22,3 +22,4 @@ class ResPartner(models.Model):
         for rec in self:
             if rec.ice and (len(rec.ice) != 15 or not rec.ice.isdigit()):
                     raise ValidationError(u"L'ICE doit être constitué de 15 chiffres")
+

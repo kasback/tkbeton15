@@ -13,5 +13,28 @@
                 <span t-esc="o.equipment_id.name"/>
             </div>
         </xpath>
+        <xpath expr="//table[1]/tr[1]/th[3]" position="replace">
+            <th style="display:none;">
+                <strong>No. Of Minutes</strong>
+            </th>
+        </xpath>
+        <xpath expr="//table[1]/tr[2]/td[3]" position="replace">
+            <td style="display:none;">
+                <span t-if="o.state != 'done'" t-field="line2.duration_expected"/>
+                <span t-if="o.state == 'done'" t-field="line2.duration"/>
+            </td>
+        </xpath>
+        <xpath expr="//table[1]/tr[1]" position="inside">
+            <th>
+                <strong>Date début</strong>
+            </th>
+            <th>
+                <strong>Date fin</strong>
+            </th>
+        </xpath>
+        <xpath expr="//table[1]/tr[2]" position="inside">
+            <td></td>
+            <td></td>
+        </xpath>
     </template>
 </odoo>
