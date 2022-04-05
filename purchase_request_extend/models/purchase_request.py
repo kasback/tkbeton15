@@ -37,7 +37,7 @@ class PurchaseRequest(models.Model):
             return group_dg.users[0]
 
     def _get_daf(self):
-        group_daf = self.env.ref('supplier_evaluation.group_daf')
+        group_daf = self.env.ref('purchase_request_extend.group_daf')
         if group_daf.users:
             return group_daf.users[0]
 
@@ -203,7 +203,7 @@ class PurchaseRequest(models.Model):
         return [('id', 'in', group_dg.users.mapped('id'))]
 
     def _get_daf_task_domain(self):
-        group_daf = self.env.ref('supplier_evaluation.group_daf')
+        group_daf = self.env.ref('purchase_request_extend.group_daf')
         return [('id', 'in', group_daf.users.mapped('id'))]
 
     @api.depends('purchase_type')
