@@ -12,7 +12,6 @@
     "init_xml": [],
     'data': [
         'security/groups.xml',
-        'views/sale_order_views.xml',
     ],
     'demo_xml': [],
     'installable': True,

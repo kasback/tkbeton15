@@ -7,8 +7,8 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='requisition_id']" position="after">
                 <field name="request_validation_date"/>
-                <field name="validation_daf" groups="supplier_evaluation.group_daf"/>
-                <field name="validation_dg" groups="supplier_evaluation.group_dg"/>
+                <field name="validation_daf" groups="purchase_request_extend.group_daf"/>
+                <field name="validation_dg" groups="purchase_request_extend.group_dg"/>
                 <field name="amount_in_mad"/>
                 <field name="tag_ids" widget="many2many_tags" options="{'no_create': True, 'no_edit': True}"/>
             </xpath>
