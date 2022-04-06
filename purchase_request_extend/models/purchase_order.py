@@ -33,7 +33,7 @@ class PurchaseOder(models.Model):
     def button_confirm(self):
         if self.requisition_id and self.amount_in_mad >= 5000 and not self.validation_dg:
             raise ValidationError('La validation du DG est requise')
-        if not self.validation_daf:
+        if not self.validation_daf and not self.user_id.has_group('purchase_request_extend.groups_purchase_super_user'):
             raise ValidationError('La validation de la DAF est requise')
         return super(PurchaseOder, self).button_confirm()
 
