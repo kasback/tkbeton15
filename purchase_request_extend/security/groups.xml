@@ -4,6 +4,9 @@
         <record id="groups_new_product_purchase_alert" model="res.groups">
             <field name="name">Alerte Lors de l'achat d'un nouveau produit</field>
         </record>
+        <record id="groups_purchase_super_user" model="res.groups">
+            <field name="name">Ne néssécite pas une validation DAF dans Les Achats</field>
+        </record>
         <record model="res.groups" id="group_dg">
             <field name="name">DG</field>
         </record>
