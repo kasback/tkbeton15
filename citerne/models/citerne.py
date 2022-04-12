@@ -35,6 +35,7 @@ class MaintenanceConsomation(models.Model):
 
     @api.depends('qty_litres')
     def compute_fuel_price(self):
+        self = self.sudo()
         fuel_product_id = self.env['product.product'].search([('is_carburant', '=', True)], limit=1)
         for rec in self:
             rec.fuel_price_unit = 0.0

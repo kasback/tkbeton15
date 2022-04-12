@@ -15,8 +15,9 @@ class PurchaseOder(models.Model):
     validation_daf = fields.Boolean('Validation de la DAF')
     validation_dg = fields.Boolean('Validation DG')
     company_currency_id = fields.Many2one('res.currency', string='Company Currency', required=True, readonly=True,
-                                  default=lambda self: self.env.user.company_id.currency_id.id)
-    amount_in_mad = fields.Monetary('Montant en DH', currency_field='company_currency_id', compute='compute_amount_in_mad')
+                                          default=lambda self: self.env.user.company_id.currency_id.id)
+    amount_in_mad = fields.Monetary('Montant en DH', currency_field='company_currency_id',
+                                    compute='compute_amount_in_mad')
     tag_ids = fields.Many2many('purchase.tag', string='Étiquettes')
 
     purchase_request_id = fields.Many2one('purchase.request', compute='compute_purchase_request_id',
@@ -24,6 +25,13 @@ class PurchaseOder(models.Model):
 
     request_validation_date = fields.Date(related='purchase_request_id.validation_date', string='Date de validation DA',
                                           store=True)
+    is_fuel_po = fields.Boolean('Est un BC de carburant', compute='compute_is_fuel_po')
+
+    @api.depends('order_line')
+    def compute_is_fuel_po(self):
+        for rec in self:
+            rec.is_fuel_po = len(rec.order_line) == 1 and \
+                             rec.order_line[0].product_id.is_carburant
 
     @api.depends('order_line', 'order_line.purchase_request_lines')
     def compute_purchase_request_id(self):
@@ -36,6 +44,30 @@ class PurchaseOder(models.Model):
         if not self.validation_daf and not self.user_id.has_group('purchase_request_extend.groups_purchase_super_user'):
             raise ValidationError('La validation de la DAF est requise')
         return super(PurchaseOder, self).button_confirm()
+
+    @api.model
+    def create(self, vals):
+        res = super(PurchaseOder, self).create(vals)
+        if 'validation_daf' in vals and 'user_id' in vals:
+            if not vals['validation_daf'] and \
+                    (
+                            not vals['user_id'].has_group('purchase_request_extend.groups_purchase_super_user')
+                            or not vals['is_fuel_po']
+                    ):
+                daf_group_users = self.env.ref(
+                    'purchase_request_extend.group_daf').users
+                if daf_group_users:
+                    for user in daf_group_users:
+                        activity_id = self.sudo().env['mail.activity'].create({
+                            'summary': 'Validation DAF requise pour le bon de commande achat ' + vals['name'],
+                            'activity_type_id': self.sudo().env.ref('mail.mail_activity_data_todo').id,
+                            'res_model_id': self.sudo().env['ir.model'].search([('model', '=', 'purchase.order')],
+                                                                               limit=1).id,
+                            'note': "",
+                            'res_id': res.id,
+                            'user_id': user.id
+                        })
+        return res
 
     def compute_amount_in_mad(self):
         self = self.sudo()
@@ -130,4 +162,3 @@ class PurchaseOrderLine(models.Model):
             price_unit = seller.product_uom._compute_price(price_unit, self.product_uom)
 
         self.price_unit = price_unit
-
