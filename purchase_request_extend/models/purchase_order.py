@@ -30,6 +30,8 @@ class PurchaseOder(models.Model):
     @api.depends('order_line')
     def compute_is_fuel_po(self):
         for rec in self:
+            print('len(rec.order_line)', len(rec.order_line))
+            print('rec.order_line[0].product_id.is_carburant', rec.order_line[0].product_id.is_carburant)
             rec.is_fuel_po = len(rec.order_line) == 1 and \
                              rec.order_line[0].product_id.is_carburant
 
@@ -41,17 +43,19 @@ class PurchaseOder(models.Model):
     def button_confirm(self):
         if self.requisition_id and self.amount_in_mad >= 5000 and not self.validation_dg:
             raise ValidationError('La validation du DG est requise')
-        if not self.validation_daf and not self.user_id.has_group('purchase_request_extend.groups_purchase_super_user'):
+        if not self.validation_daf\
+                and not self.user_id.has_group('purchase_request_extend.groups_purchase_super_user')\
+                and not self.is_fuel_po:
             raise ValidationError('La validation de la DAF est requise')
         return super(PurchaseOder, self).button_confirm()
 
     @api.model
     def create(self, vals):
         res = super(PurchaseOder, self).create(vals)
-        if 'validation_daf' in vals and 'user_id' in vals:
+        if 'validation_daf' in vals and 'user_id' in vals and 'is_fuel_po' in vals:
             if not vals['validation_daf'] and \
                     (
-                            not vals['user_id'].has_group('purchase_request_extend.groups_purchase_super_user')
+                            not self.env['res.users'].browse(vals['user_id']).has_group('purchase_request_extend.groups_purchase_super_user')
                             or not vals['is_fuel_po']
                     ):
                 daf_group_users = self.env.ref(
