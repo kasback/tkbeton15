@@ -30,8 +30,6 @@ class PurchaseOder(models.Model):
     @api.depends('order_line')
     def compute_is_fuel_po(self):
         for rec in self:
-            print('len(rec.order_line)', len(rec.order_line))
-            print('rec.order_line[0].product_id.is_carburant', rec.order_line[0].product_id.is_carburant)
             rec.is_fuel_po = len(rec.order_line) == 1 and \
                              rec.order_line[0].product_id.is_carburant
 
