@@ -31,6 +31,8 @@ class ServiceLine(models.Model):
     odometer_unit = fields.Selection(related='equipment_id.odometer_unit', string='Unité')
     compteur = fields.Integer('Compteur')
     type_id = fields.Many2one('maintenance.equipment.type', string='Types de service')
+    company_id = fields.Many2one('res.company', string='Company',
+                                 default=lambda self: self.env.company)
 
     @api.depends('equipment_id.odometer_ids', 'compteur')
     def compute_service_state(self):
