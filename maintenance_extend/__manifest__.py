@@ -8,6 +8,7 @@
     'depends': ['maintenance', 'hr', 'mrp', 'mrp_analytic'],
     'data': [
         'data/data.xml',
+        'security/rules.xml',
         'security/groups.xml',
         'security/ir.model.access.csv',
         'report/mrp_production_templates.xml',

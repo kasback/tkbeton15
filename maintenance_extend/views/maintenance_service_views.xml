@@ -14,6 +14,7 @@
                         <field name="frequency"/>
                         <field name="odometer_unit"/>
                         <field name="compteur"/>
+                        <field name="company_id"/>
                         <field name="state"/>
                     </group>
                 </sheet>
@@ -36,6 +37,7 @@
                 <field name="frequency"/>
                 <field name="odometer_unit"/>
                 <field name="compteur"/>
+                <field name="company_id"/>
                 <field name="state" widget="badge" decoration-success="state == 'far'"
                        decoration-warning="state == 'close'" decoration-danger="state == 'past'"/>
             </tree>

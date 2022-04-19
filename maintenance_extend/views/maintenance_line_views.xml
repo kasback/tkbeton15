@@ -19,6 +19,7 @@
                                attrs="{'invisible' : [('frequency', 'in', ('day', 'week', 'tri', 'year'))]}"/>
                         <field name="last_maintenance_date"/>
                         <field name="next_maintenance_date"/>
+                        <field name="company_id"/>
                     </group>
                 </sheet>
             </form>
@@ -38,6 +39,7 @@
                        attrs="{'invisible' : [('frequency', 'in', ('day', 'week'))]}"/>
                 <field name="last_maintenance_date"/>
                 <field name="next_maintenance_date"/>
+                <field name="company_id"/>
                 <field name="state" widget="badge" decoration-success="state == 'green'"
                        decoration-warning="state == 'yellow'" decoration-danger="state == 'red'"
                         decoration-info="state == 'grey'"/>
