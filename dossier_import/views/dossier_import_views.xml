@@ -58,7 +58,10 @@
                             <group col="3">
                                 <group colspan="2" string="Mode de paiement en devises">
                                     <field name="amount_total"/>
-                                    <span><field name="advance"/><field name="payment_date"/></span>
+                                    <span>
+                                        <field name="advance"/>
+                                        <field name="payment_date"/>
+                                    </span>
                                     <field name="amount_residual"/>
                                     <field name="date_projected_payment"/>
                                 </group>
@@ -71,52 +74,25 @@
                 </form>
             </field>
         </record>
-
-        <record id=" stock_picking_tree_view_inherit_transporteur" model="ir.ui.view">
-            <field name="name">stock.picking.delivery.tree.inherit.delivery</field>
-            <field name="model">stock.picking</field>
-            <field name="inherit_id" ref="stock.vpicktree"/>
+        <record id="dossier_import_tree_view" model="ir.ui.view">
+            <field name="name">dossier.import.tree.view</field>
+            <field name="model">dossier.import</field>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="purchase_request_id"/>
-                    <field name="transporteur_id"/>
-                    <field name="supplier_number"/>
-                    <field name="date_done" string="Date d'execution"/>
-                    <field name="real_date" string="Date Effective"/>
-                </xpath>
-            </field>
-        </record>
-
-        <record id="stock_picking_search_view_inherit_transporteur" model="ir.ui.view">
-            <field name="name">stock.picking.delivery.search.inherit.delivery</field>
-            <field name="model">stock.picking</field>
-            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
-            <field name="arch" type="xml">
-                <xpath expr="//search/field[1]" position="before">
-                    <field name="supplier_number"/>
-                    <field name="purchase_request_id"/>
-                </xpath>
-                <xpath expr="//search/group" position="inside">
-                    <filter string="Fournisseur" name="partner_id" domain="[]" context="{'group_by': 'partner_id'}"/>
-                    <filter string="Transporteur" name="transporteur_id" domain="[]"
-                            context="{'group_by': 'transporteur_id'}"/>
-                    <filter string="Date d'execution" name="date_done" domain="[]" context="{'group_by': 'date_done'}"/>
-                    <filter string="Date effective" name="real_date" domain="[]" context="{'group_by': 'real_date'}"/>
-                    <separator/>
-                    <filter string="Départ Usine" name="depart_usine" domain="[('depart_usine', '=', True)]"/>
-                </xpath>
-
-            </field>
-        </record>
-
-        <record id="purchase_order_search_inherit_trsp" model="ir.ui.view">
-            <field name="name">purchase.order.list.trsp.inherit</field>
-            <field name="model">purchase.order</field>
-            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
-            <field name="arch" type="xml">
-                <xpath expr="//filter[@name='approved']" position="after">
-                    <filter string="BC de transport" name="depart_usine" domain="[('depart_usine', '=', True)]"/>
-                </xpath>
+                <tree>
+                    <field name="state" widget="status_bar"/>
+                    <field name="name" required="True" placeholder="Ex:2022100000000769813"/>
+                    <field name="date"/>
+                    <field name="date_from"/>
+                    <field name="supplier_id"/>
+                    <field name="shipper_id"/>
+                    <field name="bl_lta_cmr"/>
+                    <field name="date_start"/>
+                    <field name="date_enter"/>
+                    <field name="date_reception"/>
+                    <field name="date_projected_enter"/>
+                    <field name="port_of_loading"/>
+                    <field name="port_of_discharge"/>
+                </tree>
             </field>
         </record>
     </data>
