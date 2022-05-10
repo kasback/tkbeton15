@@ -1,6 +1,8 @@
-from odoo import fields, models, api
-from odoo.exceptions import ValidationError
+from itertools import groupby
+
+from odoo import api, fields, models, _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 
 class PurchaseTags(models.Model):
@@ -41,8 +43,8 @@ class PurchaseOder(models.Model):
     def button_confirm(self):
         if self.requisition_id and self.amount_in_mad >= 5000 and not self.validation_dg:
             raise ValidationError('La validation du DG est requise')
-        if not self.validation_daf\
-                and not self.user_id.has_group('purchase_request_extend.groups_purchase_super_user')\
+        if not self.validation_daf \
+                and not self.user_id.has_group('purchase_request_extend.groups_purchase_super_user') \
                 and not self.is_fuel_po:
             raise ValidationError('La validation de la DAF est requise')
         return super(PurchaseOder, self).button_confirm()
@@ -53,7 +55,8 @@ class PurchaseOder(models.Model):
         if 'validation_daf' in vals and 'user_id' in vals and 'is_fuel_po' in vals:
             if not vals['validation_daf'] and \
                     (
-                            not self.env['res.users'].browse(vals['user_id']).has_group('purchase_request_extend.groups_purchase_super_user')
+                            not self.env['res.users'].browse(vals['user_id']).has_group(
+                                'purchase_request_extend.groups_purchase_super_user')
                             or not vals['is_fuel_po']
                     ):
                 daf_group_users = self.env.ref(
@@ -77,41 +80,6 @@ class PurchaseOder(models.Model):
             rec.amount_in_mad = rec.currency_id._convert(
                 rec.amount_total, rec.company_currency_id, rec.company_id,
                 rec.date_order or fields.Date.today())
-
-    def _log_decrease_ordered_quantity(self, purchase_order_lines_quantities):
-        return
-        # def _keys_in_sorted(move):
-        #     """ sort by picking and the responsible for the product the
-        #     move.
-        #     """
-        #     return (move.picking_id.id, move.product_id.responsible_id.id)
-        #
-        # def _keys_in_groupby(move):
-        #     """ group by picking and the responsible for the product the
-        #     move.
-        #     """
-        #     return (move.picking_id, move.product_id.responsible_id)
-        #
-        # def _render_note_exception_quantity_po(order_exceptions):
-        #     order_line_ids = self.env['purchase.order.line'].browse([order_line.id for order in order_exceptions.values() for order_line in order[0]])
-        #     purchase_order_ids = order_line_ids.mapped('order_id')
-        #     move_ids = self.env['stock.move'].concat(*rendering_context.keys())
-        #     impacted_pickings = move_ids.mapped('picking_id')._get_impacted_pickings(move_ids) - move_ids.mapped('picking_id')
-        #     values = {
-        #         'purchase_order_ids': purchase_order_ids,
-        #         'order_exceptions': order_exceptions.values(),
-        #         'impacted_pickings': impacted_pickings,
-        #     }
-        #     return self.env.ref('purchase_stock.exception_on_po')._render(values=values)
-        #
-        # documents = self.env['stock.picking']._log_activity_get_documents(purchase_order_lines_quantities, 'move_ids', 'DOWN', _keys_in_sorted, _keys_in_groupby)
-        # filtered_documents = {}
-        # for (parent, responsible), rendering_context in documents.items():
-        #     if parent._name == 'stock.picking':
-        #         if parent.state == 'cancel':
-        #             continue
-        #     filtered_documents[(parent, responsible)] = rendering_context
-        # self.env['stock.picking']._log_activity(_render_note_exception_quantity_po, filtered_documents)
 
 
 class PurchaseOrderLine(models.Model):
