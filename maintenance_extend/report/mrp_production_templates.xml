@@ -13,6 +13,13 @@
                 <span t-esc="o.equipment_id.name"/>
             </div>
         </xpath>
+        <xpath expr="//div[@class='page']/div[3]" position="inside">
+            <div class="col-3">
+                <strong>Type de maintenance:</strong>
+                <br/>
+                <span t-esc="o.analytic_account_id.name"/>
+            </div>
+        </xpath>
         <xpath expr="//table[1]/tr[1]/th[3]" position="replace">
             <th style="display:none;">
                 <strong>No. Of Minutes</strong>
@@ -26,6 +33,9 @@
         </xpath>
         <xpath expr="//table[1]/tr[1]" position="inside">
             <th>
+                <strong>Opérateur</strong>
+            </th>
+            <th>
                 <strong>Date début</strong>
             </th>
             <th>
@@ -33,6 +43,9 @@
             </th>
         </xpath>
         <xpath expr="//table[1]/tr[2]" position="inside">
+            <td>
+                <span t-field="line2.operator_id"/>
+            </td>
             <td></td>
             <td></td>
         </xpath>

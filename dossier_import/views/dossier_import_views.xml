@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="dossier_import_form_view" model="ir.ui.view">
+            <field name="name">dossier.import.form.view</field>
+            <field name="model">dossier.import</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="status_bar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" required="True" placeholder="Ex:2022100000000769813"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="date"/>
+                                <field name="date_from"/>
+                                <field name="supplier_id"/>
+                            </group>
+                            <group>
+                                <field name="shipper_id"/>
+                                <field name="bl_lta_cmr"/>
+                                <field name="date_start"/>
+                            </group>
+                            <group>
+                                <field name="date_enter"/>
+                                <field name="date_reception"/>
+                                <field name="date_projected_enter"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="port_of_loading"/>
+                            <field name="port_of_discharge"/>
+                        </group>
+                    </sheet>
+                    <notebook>
+                        <page string="Détails">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="invoice_number_date"/>
+                                    <field name="transportation_type"/>
+                                    <field name="nature"/>
+                                    <field name="net_weight"/>
+                                    <field name="gross_weight"/>
+                                    <field name="domicilliation_bank"/>
+                                    <field name="customs_charge"/>
+                                </tree>
+                            </field>
+                            <group>
+                                <field name="date_reception"/>
+                            </group>
+                            <group col="3">
+                                <group colspan="2" string="Mode de paiement en devises">
+                                    <field name="amount_total"/>
+                                    <span>
+                                        <field name="advance"/>
+                                        <field name="payment_date"/>
+                                    </span>
+                                    <field name="amount_residual"/>
+                                    <field name="date_projected_payment"/>
+                                </group>
+                                <group>
+                                    <field name="observations"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+        <record id="dossier_import_tree_view" model="ir.ui.view">
+            <field name="name">dossier.import.tree.view</field>
+            <field name="model">dossier.import</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="state" widget="status_bar"/>
+                    <field name="name" required="True" placeholder="Ex:2022100000000769813"/>
+                    <field name="date"/>
+                    <field name="date_from"/>
+                    <field name="supplier_id"/>
+                    <field name="shipper_id"/>
+                    <field name="bl_lta_cmr"/>
+                    <field name="date_start"/>
+                    <field name="date_enter"/>
+                    <field name="date_reception"/>
+                    <field name="date_projected_enter"/>
+                    <field name="port_of_loading"/>
+                    <field name="port_of_discharge"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -52,6 +52,12 @@ class MRP(models.Model):
     )
 
 
+class MRPWO(models.Model):
+    _inherit = 'mrp.workorder'
+
+    operator_id = fields.Many2one('hr.employee', 'Opérateur')
+
+
 class MaintenanceEquipment(models.Model):
     _inherit = 'maintenance.equipment'
 

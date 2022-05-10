@@ -41,6 +41,9 @@ class MaintenanceLine(models.Model):
         ('red', 'Dépassé'),
     ], string='État', compute="compute_state")
 
+    company_id = fields.Many2one('res.company', string='Company',
+                                 default=lambda self: self.env.company)
+
     @api.depends('last_maintenance_date', 'next_maintenance_date')
     def compute_state(self):
         for rec in self:
