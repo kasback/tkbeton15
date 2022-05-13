@@ -50,6 +50,13 @@ class MRP(models.Model):
     analytic_account_id = fields.Many2one(
         comodel_name="account.analytic.account", string="Analytic Account", default=lambda self: self.default_analytic_account_id()
     )
+    description = fields.Html(related='maintenance_request_id.description', string='Cause')
+
+
+class MRPWO(models.Model):
+    _inherit = 'mrp.workorder'
+
+    operator_id = fields.Many2one('hr.employee', 'Opérateur')
 
 
 class MaintenanceEquipment(models.Model):

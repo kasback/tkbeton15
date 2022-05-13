@@ -16,6 +16,20 @@
                 <field name="payment_reference" position="after">
                     <field name="purchase_id" />
                     <field name="purchase_request_id" />
+                    <field name="picking_ids"/>
+                    <field name="invoice_origin"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="inherit_account_move_tree" model="ir.ui.view">
+            <field name="name">inherit.account.order.tree</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree"/>
+            <field name="arch" type="xml">
+                <field name="ref" position="after">
+                    <field name="picking_ids" />
+                    <field name="invoice_origin" />
                 </field>
             </field>
         </record>
