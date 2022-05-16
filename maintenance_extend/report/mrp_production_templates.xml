@@ -76,7 +76,8 @@
                 <span t-field="line2.operator_id"/>
             </td>
             <td>
-                <span t-esc="line2.workcenter_id.costs_hour * (line2.duration / 60)"/> DH
+                <span t-esc="line2.workcenter_id.costs_hour * (line2.duration / 60)"/>
+                DH
             </td>
             <!--<td></td>
             <td></td>-->
@@ -96,6 +97,20 @@
             <td class="text-right">
                 <span t-esc="raw_line.product_id.standard_price * raw_line.product_uom_qty"/>
             </td>
+        </xpath>
+        <xpath expr="//div[@class='page']" position="inside">
+            <div class="row">
+                <div class="col-7">
+                    <h5>
+                        Signature Intervenant :
+                    </h5>
+                </div>
+                <div class="col-5">
+                    <h5>
+                        Vise Responsable :
+                    </h5>
+                </div>
+            </div>
         </xpath>
     </template>
 </odoo>
