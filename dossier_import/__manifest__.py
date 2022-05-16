@@ -3,7 +3,7 @@
 {
     "name": u"TKBETON: Dossier d'import",
     "version": "15.0",
-    "depends": ['base'],
+    "depends": ['base', 'purchase'],
     "author": "Osisoftware",
     "summary": "",
     'website': '',
@@ -11,6 +11,7 @@
     "description": "",
     "init_xml": [],
     'data': [
+        'security/groups.xml',
         'security/ir.model.access.csv',
         'views/dossier_import_views.xml'
     ],

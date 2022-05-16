@@ -28,6 +28,12 @@ class DossierImport(models.Model):
     date_projected_payment = fields.Date(string="Date prévu")
     observations = fields.Text(string="Observations")
 
+    def action_en_cours(self):
+        self.write({'state': 'open'})
+
+    def action_close(self):
+        self.write({'state': 'closed'})
+
 
 class DossierImportLine(models.Model):
     _name = 'dossier.import.line'
