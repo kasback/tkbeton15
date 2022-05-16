@@ -1,9 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-from odoo import models, fields, api
-from odoo.exceptions import ValidationError
-
-from odoo.tools import float_compare
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
 
@@ -47,6 +44,5 @@ class PurchaseOrder(models.Model):
         }
         if self.picking_ids and self.picking_ids.mapped('supplier_number'):
             sns = self.picking_ids.filtered(lambda p: p.supplier_number).mapped('supplier_number')
-            print('sns', sns)
             invoice_vals['picking_ids'] = ','.join(sns)
         return invoice_vals
