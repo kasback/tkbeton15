@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_mrporder_inherit" inherit_id="mrp.report_mrporder">
+        <xpath expr="//div[@class='page']" position="before">
+            <style type="text/css">
+                div{
+                margin-top:15px;
+                }
+            </style>
+        </xpath>
         <xpath expr="//div[@class='page']/div[4]" position="inside">
             <div class="col-3">
                 <strong>Catégorie:</strong>
@@ -11,6 +18,25 @@
                 <strong>Équipement:</strong>
                 <br/>
                 <span t-esc="o.equipment_id.name"/>
+            </div>
+            <div class="col-3">
+                <strong>Cause:</strong>
+                <br/>
+                <span t-esc="o.description"/>
+            </div>
+        </xpath>
+        <xpath expr="//div[@class='page']/div[4]/div[1]" position="replace">
+            <div class="col-3" style="display:none;">
+                <strong>Finished Product:</strong>
+                <br/>
+                <span t-field="o.product_id"/>
+            </div>
+        </xpath>
+        <xpath expr="//div[@class='page']/div[4]/div[2]" position="replace">
+            <div class="col-3" t-if="o.product_description_variants" style="display:none;">
+                <strong>Description:</strong>
+                <br/>
+                <span t-field="o.product_description_variants"/>
             </div>
         </xpath>
         <xpath expr="//div[@class='page']/div[3]" position="inside">
@@ -36,18 +62,55 @@
                 <strong>Opérateur</strong>
             </th>
             <th>
+                <strong>Coût Total</strong>
+            </th>
+            <!--<th>
                 <strong>Date début</strong>
             </th>
             <th>
                 <strong>Date fin</strong>
-            </th>
+            </th>-->
         </xpath>
         <xpath expr="//table[1]/tr[2]" position="inside">
             <td>
                 <span t-field="line2.operator_id"/>
             </td>
-            <td></td>
-            <td></td>
+            <td>
+                <span t-esc="line2.workcenter_id.costs_hour * (line2.duration / 60)"/>
+                DH
+            </td>
+            <!--<td></td>
+            <td></td>-->
+        </xpath>
+        <xpath expr="//table[last()]/thead/tr/th[1]" position="after">
+            <th class="table-active text-right">Coût</th>
+        </xpath>
+        <xpath expr="//table[last()]/thead/tr/th[last()]" position="after">
+            <th class="table-active text-right">Coût Total</th>
+        </xpath>
+        <xpath expr="//table[last()]/tbody/t/tr/td[1]" position="after">
+            <td class="text-right">
+                <span t-field="raw_line.product_id.standard_price"/>
+            </td>
+        </xpath>
+        <xpath expr="//table[last()]/tbody/t/tr/td[last()]" position="after">
+            <td class="text-right">
+                <span t-esc="raw_line.product_id.standard_price * raw_line.product_uom_qty"/>
+            </td>
+        </xpath>
+        <xpath expr="//div[@class='page']" position="inside">
+            <div class="row">
+                <div class="col-7">
+                    <h5>
+                        Signature Intervenant :
+                    </h5>
+                </div>
+                <div class="col-5">
+                    <h5>
+                        Vise Responsable :
+                    </h5>
+                </div>
+            </div>
         </xpath>
     </template>
 </odoo>

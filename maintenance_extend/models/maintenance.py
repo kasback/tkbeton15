@@ -36,10 +36,13 @@ class MRP(models.Model):
     def default_analytic_account_id(self):
         if 'default_maintenance_request_id' in self._context and self._context['default_maintenance_request_id']:
             maintenance_id = self.env['maintenance.request'].browse(self._context['default_maintenance_request_id'])
+            domain = [('company_id', '=', self.env.company.id)]
             if maintenance_id.maintenance_type == 'preventive':
-                return self.env.ref('maintenance_extend.account_analytic_account_data_preventive')
+                return self.env['account.analytic.account'].\
+                    search(domain + [('name', 'ilike', 'Maintenance Préventive')])
             elif maintenance_id.maintenance_type == 'corrective':
-                return self.env.ref('maintenance_extend.account_analytic_account_data_corrective')
+                return self.env['account.analytic.account'].\
+                    search(domain + [('name', 'ilike', 'Maintenance Corrective')])
 
     maintenance_request_id = fields.Many2one('maintenance.request', 'Maintenance')
     equipment_id = fields.Many2one('maintenance.equipment', related='maintenance_request_id.equipment_id',
@@ -50,6 +53,7 @@ class MRP(models.Model):
     analytic_account_id = fields.Many2one(
         comodel_name="account.analytic.account", string="Analytic Account", default=lambda self: self.default_analytic_account_id()
     )
+    description = fields.Html(related='maintenance_request_id.description', string='Cause')
 
 
 class MRPWO(models.Model):
