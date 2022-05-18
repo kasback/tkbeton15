@@ -296,6 +296,7 @@ class PurchaseRequestLine(models.Model):
                 name = "[{}] {}".format(name, self.product_id.code)
             if self.product_id.description_purchase:
                 name += "\n" + self.product_id.description_purchase
+            print('on change', self.product_id.uom_id.id)
             self.product_uom_id = self.product_id.uom_id.id
             self.product_qty = 1
             self.name = name
