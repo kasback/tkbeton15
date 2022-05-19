@@ -25,7 +25,7 @@ class DossierImport(models.Model):
     amount_residual = fields.Float(string="Solde à payer")
     advance = fields.Float(string="Avance %")
     payment_date = fields.Date(string="Date prévu")
-    date_projected_payment = fields.Date(string="Date prévu")
+    date_projected_payment = fields.Date(string="Date prévu de paiement")
     observations = fields.Text(string="Observations")
 
     def action_en_cours(self):

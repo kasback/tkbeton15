@@ -30,9 +30,19 @@ class PurchaseRequestLine(models.Model):
     )
     available_qty = fields.Float(string='Quantité disponible', default=0.0)
 
-    @api.onchange('product_id')
+    @api.onchange("product_id")
     def onchange_product_id(self):
-        self.available_qty = self.product_id.qty_available
+        if self.product_id:
+            name = self.product_id.name
+            if self.product_id.code:
+                name = "[{}] {}".format(name, self.product_id.code)
+            if self.product_id.description_purchase:
+                name += "\n" + self.product_id.description_purchase
+            self.available_qty = self.product_id.qty_available
+            self.product_uom_id = self.product_id.uom_id.id
+            self.product_qty = 1
+            self.name = name
+
 
     @api.onchange('purchase_type')
     def onchange_purchase_type(self):
