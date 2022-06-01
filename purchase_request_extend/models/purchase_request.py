@@ -101,7 +101,7 @@ class PurchaseRequest(models.Model):
     )
     purchase_order_ids = fields.Many2many('purchase.order', compute='compute_purchase_order_ids',
                                           string='Bons de commandes', store=True)
-    validation_date = fields.Date('Date de validation')
+    validation_date = fields.Date('Date de validation', readonly=True)
     equipment_id = fields.Many2one('maintenance.equipment', string='Équipement')
 
     @api.depends('line_ids', 'line_ids.purchase_lines')
