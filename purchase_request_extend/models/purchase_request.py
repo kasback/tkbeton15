@@ -15,9 +15,20 @@ _STATES = [
 class PurchaseRequestLine(models.Model):
     _inherit = "purchase.request.line"
 
+    @api.onchange('product_id')
+    def set_default_estimated_cost(self):
+        self.estimated_cost = self.product_id.standard_price
+
     supplier_id = fields.Many2one('res.partner', string="Fournisseur", readonly=False)
     default_code = fields.Char(related='product_id.default_code', string="Reférence interne")
     purchase_type = fields.Selection(related='request_id.purchase_type')
+    estimated_cost = fields.Monetary(
+        string="Estimated Cost",
+        currency_field="currency_id",
+        default=0.0,
+        help="Estimated cost of Purchase Request Line, not propagated to PO.",
+    )
+    available_qty = fields.Float(string='Quantité disponible', related='product_id.qty_available')
 
     @api.onchange('purchase_type')
     def onchange_purchase_type(self):
