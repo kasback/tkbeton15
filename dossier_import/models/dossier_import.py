@@ -5,6 +5,7 @@ from odoo import models, fields, api
 
 class DossierImport(models.Model):
     _name = 'dossier.import'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     state = fields.Selection([('new', 'Nouveau'), ('open', 'En cours'), ('closed', 'Soldé')],
                              string="État du dossier", default='new')
@@ -25,6 +26,7 @@ class DossierImport(models.Model):
     amount_residual = fields.Float(string="Solde à payer")
     advance = fields.Float(string="Avance %")
     payment_date = fields.Date(string="Date prévu")
+
     date_projected_payment = fields.Date(string="Date prévu de paiement")
     observations = fields.Text(string="Observations")
 

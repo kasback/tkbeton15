@@ -8,6 +8,9 @@ class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
     depart_usine = fields.Boolean('Départ Usine', default=False)
+    date_planned = fields.Datetime(
+        string='Receipt Date', index=True, copy=False, compute='_compute_date_planned', store=True, readonly=True,
+        help="Delivery date promised by vendor. This date is used to determine expected arrival of products.")
 
 
 class StockPicking(models.Model):
@@ -56,7 +59,7 @@ class StockPicking(models.Model):
             move_lines = rec.move_ids_without_package.filtered(lambda l: l.quantity_done > 0)
             if rec.purchase_id:
                 rec.purchase_id.write({
-                    'date_planned': rec.real_date
+                    'date_planned': fields.Date.today()
                 })
             if rec.intercompany_transfer:
                 for move in move_lines:
@@ -125,4 +128,8 @@ class StockPicking(models.Model):
                             ]
                         })
                         po.button_confirm()
+                        for picking in po.picking_ids:
+                            picking.supplier_number = rec.supplier_number
+                            picking.action_set_quantities_to_reservation()
+                            picking.button_validate()
         return super(StockPicking, self).button_validate()

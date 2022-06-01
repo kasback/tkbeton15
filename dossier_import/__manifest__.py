@@ -3,6 +3,7 @@
 {
     "name": u"TKBETON: Dossier d'import",
     "version": "15.0",
+
     "depends": ['base', 'purchase'],
     "author": "Osisoftware",
     "summary": "",
