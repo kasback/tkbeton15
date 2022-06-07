@@ -18,6 +18,7 @@ class PurchaseRequestLine(models.Model):
     @api.onchange('product_id')
     def set_default_estimated_cost(self):
         self.estimated_cost = self.product_id.standard_price
+        self.product_available_qty = self.product_id.qty_available
 
     supplier_id = fields.Many2one('res.partner', string="Fournisseur", readonly=False)
     default_code = fields.Char(related='product_id.default_code', string="Reférence interne")
@@ -28,7 +29,7 @@ class PurchaseRequestLine(models.Model):
         default=0.0,
         help="Estimated cost of Purchase Request Line, not propagated to PO.",
     )
-    available_qty = fields.Float(string='Quantité disponible', related='product_id.qty_available')
+    product_available_qty = fields.Float(string='Quantité disponible')
 
     @api.onchange('purchase_type')
     def onchange_purchase_type(self):

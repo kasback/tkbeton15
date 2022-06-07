@@ -4,6 +4,8 @@ from odoo import models,fields, api
 from odoo.exceptions import ValidationError
 from odoo.osv import expression
 
+ACCOUNT_DOMAIN = "['&', '&', '&', ('deprecated', '=', False), ('internal_type','=','other'), ('company_id', '=', current_company_id), ('is_off_balance', '=', False)]"
+
 
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
@@ -29,6 +31,12 @@ class ProductTemplate(models.Model):
     is_carburant = fields.Boolean('Est un carburant', default=False)
     can_be_manufactured = fields.Boolean('Peut être produit', compute='compute_can_be_manufactured', store=True)
     fuel_product_cost = fields.Float('Dernier prix du carburant', compute='compute_fuel_product_cost')
+    property_account_expense_id = fields.Many2one('account.account', company_dependent=True,
+        string="Expense Account",
+        domain=ACCOUNT_DOMAIN,
+        copy=True,
+        related='categ_id.property_account_expense_categ_id',
+        help="Keep this field empty to use the default value from the product category. If anglo-saxon accounting with automated valuation method is configured, the expense account on the product category will be used.")
 
     def compute_fuel_product_cost(self):
         fuel_product_id = self.env['product.product'].search([('is_carburant', '=', True)], limit=1)
