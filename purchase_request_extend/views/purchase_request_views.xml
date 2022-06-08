@@ -60,12 +60,12 @@
                 </xpath>
                 <xpath expr="//field[@name='line_ids']/tree/field[@name='product_id']" position="after">
                     <field name="supplier_id" domain="[('supplier_rank', '>', 0)]"/>
-                    <field name="available_qty" />
+                    <field name="product_available_qty" />
                 </xpath>
                 <xpath expr="//field[@name='line_ids']/form/sheet/group[@name='main']/group/field[@name='product_id']"
                        position="after">
                     <field name="supplier_id" domain="[('supplier_rank', '>', 0)]"/>
-                    <field name="available_qty"/>
+                    <field name="product_available_qty"/>
                 </xpath>
                 <xpath expr="//field[@name='line_ids']/form/sheet/group[@name='main']/group/field[@name='product_id']"
                        position="attributes">
