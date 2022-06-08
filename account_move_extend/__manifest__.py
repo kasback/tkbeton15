@@ -13,7 +13,6 @@
     'data': [
         'views/account_move_views.xml',
         'report/invoice_template.xml',
-        'report/external_layout_template.xml',
     ],
     'demo_xml': [],
     'installable': True,
