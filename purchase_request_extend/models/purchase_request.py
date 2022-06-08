@@ -29,7 +29,7 @@ class PurchaseRequestLine(models.Model):
         default=0.0,
         help="Estimated cost of Purchase Request Line, not propagated to PO.",
     )
-    product_available_qty = fields.Float(string='Quantité disponible')
+    product_available_qty = fields.Float(string='Quantité disponible', readonly=True)
 
     @api.onchange('purchase_type')
     def onchange_purchase_type(self):
