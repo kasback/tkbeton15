@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_mrporder_inherit" inherit_id="mrp.report_mrporder">
-
+        <xpath expr="//t[@t-call='web.internal_layout']" position="attributes">
+            <attribute name="t-call">web.external_layout</attribute>
+        </xpath>
         <xpath expr="//div[@class='page']/div[3]" position="inside">
             <div class="col-3">
                 <strong>Date:</strong>
@@ -16,7 +18,6 @@
                 margin-top:15px;
                 }
             </style>
-
         </xpath>
         <xpath expr="//div[@class='page']/div[4]" position="inside">
             <div class="col-3">
