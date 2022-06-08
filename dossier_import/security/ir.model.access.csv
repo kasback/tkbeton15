@@ -3,3 +3,4 @@ access_dossier_import_read,dossier_import_read,model_dossier_import,groups_dossi
 access_dossier_import_line_read,dossier_import_line_read,model_dossier_import_line,groups_dossier_import_user,1,0,0,0
 access_dossier_import_read,dossier_import_read,model_dossier_import,groups_dossier_import_manager,1,1,1,1
 access_dossier_import_line_read,dossier_import_line_read,model_dossier_import_line,groups_dossier_import_manager,1,1,1,1
+

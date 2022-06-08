@@ -72,6 +72,11 @@ class ProductTemplate(models.Model):
                     })
         return res
 
+    @api.onchange('categ_id')
+    def onchange_categ_id(self):
+        if self.categ_id:
+            self.property_account_expense_id = self.categ_id.property_account_expense_categ_id
+
 
 class ProductProduct(models.Model):
     _inherit = 'product.product'

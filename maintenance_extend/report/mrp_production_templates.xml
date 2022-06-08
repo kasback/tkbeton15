@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_mrporder_inherit" inherit_id="mrp.report_mrporder">
+
+        <xpath expr="//div[@class='page']/div[3]" position="inside">
+            <div class="col-3">
+                <strong>Date:</strong>
+                <br/>
+                <span t-esc="o.date_planned_start"/>
+            </div>
+        </xpath>
+
         <xpath expr="//div[@class='page']" position="before">
             <style type="text/css">
                 div{
                 margin-top:15px;
                 }
             </style>
+
         </xpath>
         <xpath expr="//div[@class='page']/div[4]" position="inside">
             <div class="col-3">
@@ -47,13 +57,12 @@
             </div>
         </xpath>
         <xpath expr="//table[1]/tr[1]/th[3]" position="replace">
-            <th style="display:none;">
-                <strong>No. Of Minutes</strong>
+            <th>
+                <strong>Durée</strong>
             </th>
         </xpath>
         <xpath expr="//table[1]/tr[2]/td[3]" position="replace">
-            <td style="display:none;">
-                <span t-if="o.state != 'done'" t-field="line2.duration_expected"/>
+            <td>
                 <span t-if="o.state == 'done'" t-field="line2.duration"/>
             </td>
         </xpath>

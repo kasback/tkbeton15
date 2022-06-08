@@ -71,6 +71,10 @@
                        position="attributes">
                     <attribute name="options">{'no_create': True}</attribute>
                 </xpath>
+                <xpath expr="//field[@name='line_ids']/form/sheet/group[@name='main']/group/div[1]/field[@name='product_uom_id']"
+                       position="attributes">
+                    <attribute name="options">{'no_create': True}</attribute>
+                </xpath>
                 <field name="assigned_to" position="attributes">
                     <attribute name="widget">selection</attribute>
                     <attribute name="readonly">1</attribute>
