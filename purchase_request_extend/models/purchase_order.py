@@ -52,26 +52,26 @@ class PurchaseOder(models.Model):
     @api.model
     def create(self, vals):
         res = super(PurchaseOder, self).create(vals)
-        if 'validation_daf' in vals and 'user_id' in vals and 'is_fuel_po' in vals:
+        if 'validation_daf' in vals and 'user_id' in vals and 'order_line' in vals:
+            is_fuel_po = len(vals['order_line']) == 1 and \
+                              self.env['product.product'].browse(vals['order_line'][0][2]['product_id']).is_carburant
             if not vals['validation_daf'] and \
-                    (
-                            not self.env['res.users'].browse(vals['user_id']).has_group(
-                                'purchase_request_extend.groups_purchase_super_user')
-                            or not vals['is_fuel_po']
-                    ):
+                    not self.env['res.users'].browse(vals['user_id']).has_group(
+                        'purchase_request_extend.groups_purchase_super_user') \
+                    and not is_fuel_po:
                 daf_group_users = self.env.ref(
                     'purchase_request_extend.group_daf').users
                 if daf_group_users:
-                    for user in daf_group_users:
-                        activity_id = self.sudo().env['mail.activity'].create({
-                            'summary': 'Validation DAF requise pour le bon de commande achat ' + vals['name'],
-                            'activity_type_id': self.sudo().env.ref('mail.mail_activity_data_todo').id,
-                            'res_model_id': self.sudo().env['ir.model'].search([('model', '=', 'purchase.order')],
-                                                                               limit=1).id,
-                            'note': "",
-                            'res_id': res.id,
-                            'user_id': user.id
-                        })
+                    for user in daf_group_users: \
+                            activity_id = self.sudo().env['mail.activity'].create({
+                                'summary': 'Validation DAF requise pour le bon de commande achat ' + vals['name'],
+                                'activity_type_id': self.sudo().env.ref('mail.mail_activity_data_todo').id,
+                                'res_model_id': self.sudo().env['ir.model'].search([('model', '=', 'purchase.order')],
+                                                                                   limit=1).id,
+                                'note': "",
+                                'res_id': res.id,
+                                'user_id': user.id
+                            })
         return res
 
     def compute_amount_in_mad(self):
