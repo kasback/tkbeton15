@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="external_layout_inherit" inherit_id="web.external_layout_standard">
-        <xpath expr="//div[@t-attf-class='header o_company_#{company.id}_layout']" position="inside">
+        <xpath expr="//div[@t-attf-class='header o_company_#{company.id}_layout']/div[1]/div[last()]"
+               position="replace">
             <t t-set="report_code_line"
                t-value="company.report_code_ids.filtered(lambda rc: rc.report_id.report_name == xmlid)"/>
             <t t-if="report_code_line">
-                <h3 class="text-right">
-                    Code du document:
-                    <span t-esc="report_code_line.code"/>
-                </h3>
+                <div class="col-9 text-right" style="margin-top:22px;">
+                    <h3 class="text-right">
+                        Code du document:
+                        <span t-esc="report_code_line.code"/>
+                    </h3>
+                </div>
             </t>
         </xpath>
         <xpath expr="//div[@t-attf-class='footer o_standard_footer o_company_#{company.id}_layout']" position="replace">
