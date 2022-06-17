@@ -28,21 +28,24 @@ class StockPicking(models.Model):
                                           string='Demande d\'Achat')
 
     def prepare_sale_order_lines(self, move_ids):
+        lines = []
         for move in move_ids:
             price_unit = move.purchase_line_id.price_unit
-            return [(0, 0, {
+            print('move.quantity_done', move.quantity_done)
+            lines.append((0, 0, {
                 'name': move.product_id.name,
                 'product_id': move.product_id.id,
                 'product_uom_qty': move.quantity_done,
                 'product_uom': move.product_id.uom_id.id,
                 'price_unit': price_unit + (price_unit * (self.percent / 100)),
-            })]
+            }))
+        return lines
 
     def prepare_purchase_order_lines(self, move_ids):
+        lines = []
         for move in move_ids:
             price_unit = move.purchase_line_id.price_unit
-            return [
-                (0, 0, {
+            lines.append((0, 0, {
                     'name': move.product_id.name,
                     'product_id': move.product_id.id,
                     'product_qty': move.quantity_done,
@@ -50,8 +53,8 @@ class StockPicking(models.Model):
                     'price_unit': price_unit + (price_unit * (self.percent / 100)),
                     'date_planned': self.real_date or fields.Date.today(),
                     'taxes_id': move.purchase_line_id.taxes_id
-                })
-            ]
+                }))
+        return lines
 
     def button_validate(self):
         self = self.sudo()
@@ -78,9 +81,13 @@ class StockPicking(models.Model):
                         so_intercompany.action_confirm()
                         for picking in so_intercompany.picking_ids:
                             picking.supplier_number = rec.supplier_number
+                            picking.action_assign()
                             picking.action_set_quantities_to_reservation()
+                            # print('picking.move_line_ids_without_package', picking.move_line_ids_without_package)
                             for ml in picking.move_ids_without_package:
-                                ml.quantity_done = ml.product_uom_qty
+                                ml.quantity_done = move.quantity_done
+                            for ml in picking.move_line_ids_without_package:
+                                ml.qty_done = move.quantity_done
                             picking.button_validate()
                         picking_type_id = self.env['stock.picking.type'].search([('code', '=', 'incoming'),
                                                                                  ('sequence_code', '=', 'IN'),
@@ -95,7 +102,8 @@ class StockPicking(models.Model):
                             'picking_type_id': picking_type_id.id,
                             'origin': rec.name + '/' + rec.supplier_number,
                             'order_line': rec.prepare_purchase_order_lines(move),
-                            'company_id': rec.company_dest_id.id
+                            'company_id': rec.company_dest_id.id,
+                            'validation_daf': True
                         })
                         so_intercompany.write({
                             'client_order_ref': po_intercompany.name
@@ -105,7 +113,7 @@ class StockPicking(models.Model):
                             picking.supplier_number = rec.supplier_number
                             picking.action_set_quantities_to_reservation()
                             picking.button_validate()
-            if rec.depart_usine:
+            if rec.depart_usine and rec.transporteur_id:
                 existing_po = self.env['purchase.order'].search([('depart_usine', '=', True),
                                                                  ('partner_ref', '=', rec.supplier_number)])
                 if not existing_po:
@@ -113,6 +121,7 @@ class StockPicking(models.Model):
                         po = self.env['purchase.order'].create({
                             'partner_id': rec.transporteur_id.id,
                             'partner_ref': rec.supplier_number,
+                            'validation_daf': True,
                             'depart_usine': True,
                             'order_line': [
                                 (0, 0, {
