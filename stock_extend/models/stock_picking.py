@@ -65,54 +65,55 @@ class StockPicking(models.Model):
                     'date_planned': fields.Date.today()
                 })
             if rec.intercompany_transfer:
-                for move in move_lines:
-                    SaleOrder = self.env['sale.order']
-                    PurchaseOrder = self.env['purchase.order']
-                    existing_so = SaleOrder.search([('origin', '=', rec.name + '/' + rec.supplier_number)])
-                    existing_po = PurchaseOrder.search([('origin', '=', rec.name + '/' + rec.supplier_number),
-                                                        ('company_id', '=', rec.company_dest_id.id)])
-                    if not existing_po and not existing_so:
-                        so_intercompany = SaleOrder.create({
-                            'partner_id': rec.company_dest_id.partner_id.id,
-                            'date_order': rec.real_date or fields.datetime.now(),
-                            'origin': rec.name + '/' + rec.supplier_number,
-                            'order_line': rec.prepare_sale_order_lines(move)
-                        })
-                        so_intercompany.action_confirm()
-                        for picking in so_intercompany.picking_ids:
-                            picking.supplier_number = rec.supplier_number
-                            picking.action_assign()
-                            picking.action_set_quantities_to_reservation()
-                            # print('picking.move_line_ids_without_package', picking.move_line_ids_without_package)
-                            for ml in picking.move_ids_without_package:
-                                ml.quantity_done = move.quantity_done
-                            for ml in picking.move_line_ids_without_package:
-                                ml.qty_done = move.quantity_done
-                            picking.button_validate()
-                        picking_type_id = self.env['stock.picking.type'].search([('code', '=', 'incoming'),
-                                                                                 ('sequence_code', '=', 'IN'),
-                                                                                 ('company_id', '=',
-                                                                                  rec.company_dest_id.id),
-                                                                                 ('return_picking_type_id', '!=', False)
-                                                                                 ])
-                        po_intercompany = PurchaseOrder.create({
-                            'partner_id': rec.company_id.partner_id.id,
-                            'partner_ref': so_intercompany.name,
-                            'date_approve': rec.real_date,
-                            'picking_type_id': picking_type_id.id,
-                            'origin': rec.name + '/' + rec.supplier_number,
-                            'order_line': rec.prepare_purchase_order_lines(move),
-                            'company_id': rec.company_dest_id.id,
-                            'validation_daf': True
-                        })
-                        so_intercompany.write({
-                            'client_order_ref': po_intercompany.name
-                        })
-                        po_intercompany.button_confirm()
-                        for picking in po_intercompany.picking_ids:
-                            picking.supplier_number = rec.supplier_number
-                            picking.action_set_quantities_to_reservation()
-                            picking.button_validate()
+                sale_order_lines = rec.prepare_sale_order_lines(move_lines)
+                purchase_order_lines = rec.prepare_purchase_order_lines(move_lines)
+                SaleOrder = self.env['sale.order']
+                PurchaseOrder = self.env['purchase.order']
+                existing_so = SaleOrder.search([('origin', '=', rec.name + '/' + rec.supplier_number)])
+                existing_po = PurchaseOrder.search([('origin', '=', rec.name + '/' + rec.supplier_number),
+                                                    ('company_id', '=', rec.company_dest_id.id)])
+                if not existing_po and not existing_so:
+                    so_intercompany = SaleOrder.create({
+                        'partner_id': rec.company_dest_id.partner_id.id,
+                        'date_order': rec.real_date or fields.datetime.now(),
+                        'origin': rec.name + '/' + rec.supplier_number,
+                        'order_line': sale_order_lines
+                    })
+                    so_intercompany.action_confirm()
+                    for picking in so_intercompany.picking_ids:
+                        picking.supplier_number = rec.supplier_number
+                        picking.action_assign()
+                        picking.action_set_quantities_to_reservation()
+                        # print('picking.move_line_ids_without_package', picking.move_line_ids_without_package)
+                        for ml in picking.move_ids_without_package:
+                            ml.quantity_done = ml.sale_line_id.product_uom_qty
+                        for ml in picking.move_line_ids_without_package:
+                            ml.qty_done = ml.move_id.sale_line_id.product_uom_qty
+                        picking.button_validate()
+                    picking_type_id = self.env['stock.picking.type'].search([('code', '=', 'incoming'),
+                                                                             ('sequence_code', '=', 'IN'),
+                                                                             ('company_id', '=',
+                                                                              rec.company_dest_id.id),
+                                                                             ('return_picking_type_id', '!=', False)
+                                                                             ])
+                    po_intercompany = PurchaseOrder.create({
+                        'partner_id': rec.company_id.partner_id.id,
+                        'partner_ref': so_intercompany.name,
+                        'date_approve': rec.real_date,
+                        'picking_type_id': picking_type_id.id,
+                        'origin': rec.name + '/' + rec.supplier_number,
+                        'order_line': purchase_order_lines,
+                        'company_id': rec.company_dest_id.id,
+                        'validation_daf': True
+                    })
+                    so_intercompany.write({
+                        'client_order_ref': po_intercompany.name
+                    })
+                    po_intercompany.button_confirm()
+                    for picking in po_intercompany.picking_ids:
+                        picking.supplier_number = rec.supplier_number
+                        picking.action_set_quantities_to_reservation()
+                        picking.button_validate()
             if rec.depart_usine and rec.transporteur_id:
                 existing_po = self.env['purchase.order'].search([('depart_usine', '=', True),
                                                                  ('partner_ref', '=', rec.supplier_number)])

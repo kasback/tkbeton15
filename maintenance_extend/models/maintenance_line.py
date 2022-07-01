@@ -58,6 +58,15 @@ class MaintenanceLine(models.Model):
             elif diff_days > 1:
                 rec.state = 'green'
 
+    def get_last_day_of_month_date(self, last_maintenance_date, day_of_week):
+        cal = calendar.Calendar(0)
+        year = last_maintenance_date.year
+        month = last_maintenance_date.month
+        month_calendar = cal.monthdatescalendar(year, month)
+        lastweek = month_calendar[-1]
+        last_day_of_month = lastweek[int(day_of_week)]
+        return datetime.date(year, month, last_day_of_month.day)
+
     @api.depends('last_maintenance_date', 'day_of_week', 'frequency')
     def _compute_next_maintenance(self):
         """
@@ -66,15 +75,12 @@ class MaintenanceLine(models.Model):
             monthly: next_maintenance_date = Last 'day_of_week' of last_maintenance_date.month
         :return:
         """
-        cal = calendar.Calendar(0)
         for rec in self:
             if rec.frequency == 'month':
-                year = rec.last_maintenance_date.year
-                month = rec.last_maintenance_date.month
-                month_calendar = cal.monthdatescalendar(year, month)
-                lastweek = month_calendar[-1]
-                last_day_of_month = lastweek[int(rec.day_of_week)]
-                rec.next_maintenance_date = datetime.date(year, month, last_day_of_month.day)
+                # next_maintenance_date = self.get_last_day_of_month_date(rec.last_maintenance_date, rec.day_of_week)
+                # if next_maintenance_date < rec.last_maintenance_date:
+                next_maintenance_date = self.get_last_day_of_month_date(rec.last_maintenance_date + datetime.timedelta(days=30), rec.day_of_week)
+                rec.next_maintenance_date = next_maintenance_date
             elif rec.frequency == 'week':
                 rec.next_maintenance_date = rec.last_maintenance_date + datetime.timedelta(weeks=1)
             elif rec.frequency == 'tri':
