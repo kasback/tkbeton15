@@ -18,6 +18,7 @@ class StockPicking(models.Model):
 
     transporteur_id = fields.Many2one('res.partner', string='Transporteur', copy=False)
     supplier_number = fields.Char('BL fournisseur', copy=False)
+    br_number = fields.Char('Numéro de BR', copy=False)
     real_date = fields.Datetime('Date Effective', required=False)
     depart_usine = fields.Boolean('Départ Usine', default=False)
     city = fields.Many2one('product.product', 'Ville')
@@ -31,7 +32,6 @@ class StockPicking(models.Model):
         lines = []
         for move in move_ids:
             price_unit = move.purchase_line_id.price_unit
-            print('move.quantity_done', move.quantity_done)
             lines.append((0, 0, {
                 'name': move.product_id.name,
                 'product_id': move.product_id.id,
@@ -122,6 +122,7 @@ class StockPicking(models.Model):
                         po = self.env['purchase.order'].create({
                             'partner_id': rec.transporteur_id.id,
                             'partner_ref': rec.supplier_number,
+                            'date_order': rec.real_date,
                             'validation_daf': True,
                             'depart_usine': True,
                             'order_line': [

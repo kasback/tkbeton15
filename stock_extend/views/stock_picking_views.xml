@@ -21,6 +21,7 @@
                 <xpath expr="//div[@class='oe_title']" position="inside">
                     <h2>
                         <field name="supplier_number" placeholder="Numéro de BL fournisseur" attrs="{'required': [('picking_type_code', '!=', 'internal')], 'invisible': [('picking_type_code', '=', 'internal')]}"/>
+                        <field name="br_number" placeholder="Numéro de BR" attrs="{'required': [('picking_type_code', '!=', 'internal')], 'invisible': [('picking_type_code', '=', 'internal')]}"/>
                     </h2>
                 </xpath>
                 <field name="user_id" position="after">
