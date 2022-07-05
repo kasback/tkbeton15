@@ -122,7 +122,7 @@ class StockPicking(models.Model):
                         po = self.env['purchase.order'].create({
                             'partner_id': rec.transporteur_id.id,
                             'partner_ref': rec.supplier_number,
-                            'date_order': rec.real_date,
+                            'date_order': rec.real_date or datetime.datetime.today(),
                             'validation_daf': True,
                             'depart_usine': True,
                             'order_line': [
